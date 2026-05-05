@@ -256,52 +256,7 @@
       transition: width 0.6s ease;
     }
 
-    /* ── CHART ── */
-    .chart-container {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-    }
-
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .chart-title {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-
-    .chart-legend {
-      display: flex;
-      gap: 16px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--muted);
-      font-family: var(--font-mono);
-    }
-
-    .legend-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 180px !important;
-    }
+    
 
     /* ── LOG ── */
     .log-container {
@@ -423,24 +378,6 @@
       </div>
 
     </div>
-  </div>
-
-  <!-- Historique graphique -->
-   <div class="chart-container">
-    <div class="chart-header">
-      <div class="chart-title">// Historique</div>
-      <div class="chart-legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--accent)"></div>
-          reTestVal1
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--accent2)"></div>
-          usTestVal2
-        </div>
-      </div>
-    </div>
-    <canvas id="chart"></canvas>
   </div>
 
   <!-- Log -->
