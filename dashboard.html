@@ -535,7 +535,14 @@
     el.style.width = pct + '%';
   }
 
- 
+  // ── Flash valeur ───────────────────────────────────────────
+  function flashValue(el) {
+    el.classList.remove('updated');
+    void el.offsetWidth;
+    el.classList.add('updated');
+    setTimeout(() => el.classList.remove('updated'), 500);
+  }
+
   // ── Connexion MQTT ─────────────────────────────────────────
   addLog('Connexion à ' + BROKER + '...', '');
 
