@@ -228,6 +228,7 @@
       color: var(--text);
       line-height: 1;
       transition: color 0.3s;
+      letter-spacing: 2px;
     }
 
     .card-value.updated {
@@ -342,7 +343,7 @@
   <!-- Valeurs temps réel -->
    <!-- Var 1 -->
   <div>
-    <div class="section-label">// Valeurs station 1</div>
+    <div class="section-label">Station 1</div>
     <div class="cards">
 
       <div class="card">
@@ -360,13 +361,15 @@
       <!-- Historique graphique -->
       <div class="chart-container">
       <div class="chart-header">
-        <div class="chart-title">// Graphe température</div>
+        <div class="chart-title">Graphe température</div>
           <div class="chart-legend">
           <div class="legend-item">
             <div class="legend-dot" style="background:var(--accent)"></div>
               Température
             </div>
           </div>
+          <div class="legend-item" id="legend-min">Min: --</div>
+          <div class="legend-item" id="legend-max">Max: --</div>
       </div>
       <canvas id="chart"></canvas>
       </div>
@@ -374,7 +377,7 @@
   </div>
 
   <div>
-    <div class="section-label">// Valeurs station 2</div>
+    <div class="section-label">Station 2</div>
     <div class="cards">
 
       <!-- Var 2 -->
@@ -434,6 +437,8 @@
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
+  const elLgdMin    = document.getElementById('legend-min');
+  const elLgdMax    = document.getElementById('legend-max');
 
    // ── Unités ───────────────────────────────────────
    elUnit1.textContent = '°C';
@@ -442,7 +447,7 @@
 
    // ── Graphique canvas ───────────────────────────────────────
    const canvas = document.getElementById('chart');
-  const ctx    = canvas.getContext('2d');
+   const ctx    = canvas.getContext('2d');
 
   function resizeCanvas() {
     canvas.width  = canvas.offsetWidth;
@@ -466,9 +471,14 @@
       if (data.length < 2) return;
 
       const all  = history.val1;
-      const minV = 0;
-      const maxV = 100;
+      const minV = Math.min(...history.val1);
+      const maxV = Math.max(...history.val1);
       const range = maxV - minV || 1;
+
+
+      elLgdMin.textContent = `MIN: ${minV.toFixed(1)} °C`;
+      elLgdMax.textContent = `MAX: ${maxV.toFixed(1)} °C`;
+
 
       const pts = data.map((v, i) => ({
         x: (i / (data.length - 1)) * w,
