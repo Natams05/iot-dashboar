@@ -239,6 +239,53 @@
       color: var(--muted);
     }
 
+/* ── CHART ── */
+.chart-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .legend-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 180px !important;
+    }
+
     /* ── FOOTER ── */
     footer {
       position: relative;
@@ -273,6 +320,7 @@
 <main>
 
   <!-- Valeurs temps réel -->
+   <!-- Var 1 -->
   <div>
     <div class="section-label">// Valeurs temps réel</div>
     <div class="cards">
@@ -289,6 +337,7 @@
         </div>
       </div>
 
+      <!-- Var 2 -->
       <div class="card">
         <div class="card-tag">VAR_2</div>
         <div class="card-label">T2606/Test/Var2</div>
@@ -301,6 +350,7 @@
         </div>
       </div>
 
+      <!-- Var 3 -->
       <div class="card">
         <div class="card-tag">VAR_3</div>
         <div class="card-label">T2606/Test/Var3</div>
@@ -317,6 +367,20 @@
   </div>
 </main>
 
+ <!-- Historique graphique -->
+ <div class="chart-container">
+  <div class="chart-header">
+    <div class="chart-title">// test graphe</div>
+    <div class="chart-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--accent)"></div>
+        Var3
+      </div>
+    </div>
+  </div>
+  <canvas id="chart"></canvas>
+</div>
+
 <footer>
   <span>broker.hivemq.com:8884 · T2606/Test/Var1 · T2606/Test/Var2</span>
 </footer>
@@ -327,9 +391,11 @@
   const TOPIC1  = 'T2606/Test/Var1';
   const TOPIC2  = 'T2606/Test/Var2';
   const TOPIC3  = 'T2606/Test/Var3';
+  const MAX_PTS = 30;
  
   // ── État ───────────────────────────────────────────────────
-  
+const history = { val3: []};
+
 
   // ── Éléments DOM ───────────────────────────────────────────
   const elVal1      = document.getElementById('val1');
@@ -339,6 +405,58 @@
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
   
+   // ── Graphique canvas ───────────────────────────────────────
+   const canvas = document.getElementById('chart');
+  const ctx    = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
+
+  function drawChart() {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    if (history.val3.length < 2) return;
+
+    const datasets = [
+      { data: history.val3, color: '#00d4ff' },
+      
+    ];
+
+    datasets.forEach(({ data, color }) => {
+      if (data.length < 2) return;
+
+      const all  = history.val3;
+      const minV = Math.min(...all);
+      const maxV = Math.max(...all) || 1;
+      const range = maxV - minV || 1;
+
+      const pts = data.map((v, i) => ({
+        x: (i / (data.length - 1)) * w,
+        y: h - ((v - minV) / range) * (h - 20) - 10
+      }));
+
+      
+      // Ligne
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+
+      // Point final
+      const last = pts[pts.length - 1];
+      ctx.beginPath();
+      ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    });
+  }
+
   // ── Connexion MQTT ─────────────────────────────────────────
 
   const client = mqtt.connect(BROKER, {
@@ -387,6 +505,9 @@
 
       if (topic === TOPIC3) {
         elVal3.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        history.val3.push(isNaN(value) ? 0 : value);
+        if (history.val3.length > MAX_PTS) history.val3.shift();
+        drawChart();
       }
 
       elUpdate.textContent = now;
