@@ -301,6 +301,18 @@
         </div>
       </div>
 
+      <div class="card">
+        <div class="card-tag">VAR_3</div>
+        <div class="card-label">T2606/Test/Var3</div>
+        <div>
+          <span class="card-value" id="val3">--</span>
+          <span class="card-unit"></span>
+        </div>
+        <div class="card-type">USINT ·  Intager</div>
+        <div class="card-bar">
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
@@ -314,6 +326,7 @@
   const BROKER  = 'wss://broker.hivemq.com:8884/mqtt';
   const TOPIC1  = 'T2606/Test/Var1';
   const TOPIC2  = 'T2606/Test/Var2';
+  const TOPIC3  = 'T2606/Test/Var3';
  
   // ── État ───────────────────────────────────────────────────
   
@@ -321,6 +334,7 @@
   // ── Éléments DOM ───────────────────────────────────────────
   const elVal1      = document.getElementById('val1');
   const elVal2      = document.getElementById('val2');
+  const elVal3      = document.getElementById('val3');
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
@@ -339,6 +353,8 @@
     client.subscribe(TOPIC1, err => {
     });
     client.subscribe(TOPIC2, err => {
+    });
+    client.subscribe(TOPIC3, err => {
     });
   });
 
@@ -367,6 +383,10 @@
 
       if (topic === TOPIC2) {
         elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
+      }
+
+      if (topic === TOPIC3) {
+        elVal3.textContent = isNaN(value) ? message.toString() : parseInt(value);
       }
 
       elUpdate.textContent = now;
