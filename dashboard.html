@@ -190,7 +190,7 @@
 
     .card-tag {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 15px;
       letter-spacing: 2px;
       color: var(--accent);
       text-transform: uppercase;
@@ -198,7 +198,7 @@
     }
 
     .card-label {
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 300;
       color: var(--muted);
       margin-bottom: 16px;
@@ -258,7 +258,7 @@
 
     .chart-title {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 15px;
       letter-spacing: 2px;
       color: var(--accent);
       text-transform: uppercase;
@@ -328,8 +328,8 @@
     <div class="cards">
 
       <div class="card">
-        <div class="card-tag">VAR_1</div>
-        <div class="card-label">T2606/Test/Var1</div>
+        <div class="card-tag">Température torréfacteur</div>
+        <div class="card-label">T2606/Siemens/TempTorefacteur</div>
         <div>
           <span class="card-value" id="val1">--</span>
           <span class="card-unit" id="unit1"></span>
@@ -342,11 +342,11 @@
       <!-- Historique graphique -->
       <div class="chart-container">
       <div class="chart-header">
-        <div class="chart-title">// test graphe</div>
+        <div class="chart-title">// Graphe température</div>
           <div class="chart-legend">
           <div class="legend-item">
             <div class="legend-dot" style="background:var(--accent)"></div>
-              Var3
+              Température
             </div>
           </div>
       </div>
@@ -404,7 +404,7 @@
   const MAX_PTS = 30;
  
   // ── État ───────────────────────────────────────────────────
-  const history = { val3: []};
+  const history = { val1: []};
 
   // ── Éléments DOM ───────────────────────────────────────────
   const elVal1      = document.getElementById('val1');
@@ -433,17 +433,17 @@
     const w = canvas.width, h = canvas.height;
     ctx.clearRect(0, 0, w, h);
 
-    if (history.val3.length < 2) return;
+    if (history.val1.length < 2) return;
 
     const datasets = [
-      { data: history.val3, color: '#00d4ff' },
+      { data: history.val1, color: '#D99A45' },
       
     ];
 
     datasets.forEach(({ data, color }) => {
       if (data.length < 2) return;
 
-      const all  = history.val3;
+      const all  = history.val1;
       const minV = 0;
       const maxV = 100;
       const range = maxV - minV || 1;
@@ -510,6 +510,9 @@
 
       if (topic === TOPIC1) {
         elVal1.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
+        history.val1.push(isNaN(value) ? 0 : value);
+        if (history.val1.length > MAX_PTS) history.val1.shift();
+        drawChart();
       }
 
       if (topic === TOPIC2) {
@@ -518,9 +521,6 @@
 
       if (topic === TOPIC3) {
         elVal3.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        history.val3.push(isNaN(value) ? 0 : value);
-        if (history.val3.length > MAX_PTS) history.val3.shift();
-        drawChart();
       }
 
       elUpdate.textContent = now;
