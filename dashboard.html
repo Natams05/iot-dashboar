@@ -332,7 +332,7 @@
         <div class="card-label">T2606/Test/Var1</div>
         <div>
           <span class="card-value" id="val1">--</span>
-          <span class="card-unit"></span>
+          <span class="card-unit" id="unit1"></span>
         </div>
         <div class="card-type">REAL · Float</div>
         <div class="card-bar">
@@ -358,7 +358,7 @@
   <div>
     <div class="section-label">// Valeurs station 2</div>
     <div class="cards">
-      
+
       <!-- Var 2 -->
       <div class="card">
         <div class="card-tag">VAR_2</div>
@@ -404,13 +404,14 @@
   const MAX_PTS = 30;
  
   // ── État ───────────────────────────────────────────────────
-const history = { val3: []};
-
+  const history = { val3: []};
+  elUnit1.textContent = '°C';
 
   // ── Éléments DOM ───────────────────────────────────────────
   const elVal1      = document.getElementById('val1');
   const elVal2      = document.getElementById('val2');
   const elVal3      = document.getElementById('val3');
+  const elUnit1     = document.getElementById('unit1');
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
