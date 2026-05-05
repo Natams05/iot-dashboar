@@ -334,7 +334,7 @@
           <span class="card-value" id="val1">--</span>
           <span class="card-unit" id="unit1"></span>
         </div>
-        <div class="card-type">REAL · Float</div>
+        <div class="card-type"></div>
         <div class="card-bar">
         </div>
       </div>
@@ -361,26 +361,26 @@
 
       <!-- Var 2 -->
       <div class="card">
-        <div class="card-tag">VAR_2</div>
+        <div class="card-tag">Température grain</div>
         <div class="card-label">T2606/Test/Var2</div>
         <div>
           <span class="card-value" id="val2">--</span>
           <span class="card-unit"></span>
         </div>
-        <div class="card-type">USINT · Unsigned Int</div>
+        <div class="card-type"></div>
         <div class="card-bar">
         </div>
       </div>
 
       <!-- Var 3 -->
       <div class="card">
-        <div class="card-tag">VAR_3</div>
+        <div class="card-tag">Niveau de vide</div>
         <div class="card-label">T2606/Test/Var3</div>
         <div>
           <span class="card-value" id="val3">--</span>
           <span class="card-unit"></span>
         </div>
-        <div class="card-type">USINT ·  Intager</div>
+        <div class="card-type"></div>
         <div class="card-bar">
         </div>
       </div>
@@ -411,12 +411,14 @@
   const elVal2      = document.getElementById('val2');
   const elVal3      = document.getElementById('val3');
   const elUnit1     = document.getElementById('unit1');
+  const elunit2     = document.getElementById('unit2');
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
 
    // ── Unités ───────────────────────────────────────
    elUnit1.textContent = '°C';
+   elunit2.textContent = 'bar';
 
    // ── Graphique canvas ───────────────────────────────────────
    const canvas = document.getElementById('chart');
