@@ -500,6 +500,12 @@
       ctx.fillStyle = color;
       ctx.fill();
     });
+
+    
+  drawMinMaxLabel(minV, `MIN ${minV.toFixed(1)} °C`, '#c8d6e5');
+  drawMinMaxLabel(maxV, `MAX ${maxV.toFixed(1)} °C`, '#c8d6e5')
+
+
   }
 
   // ── Connexion MQTT ─────────────────────────────────────────
