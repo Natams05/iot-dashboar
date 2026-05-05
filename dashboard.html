@@ -365,7 +365,7 @@
         <div class="card-label">T2606/Test/Var2</div>
         <div>
           <span class="card-value" id="val2">--</span>
-          <span class="card-unit"></span>
+          <span class="card-unit" id="unit2"></span>
         </div>
         <div class="card-type"></div>
         <div class="card-bar">
@@ -378,7 +378,7 @@
         <div class="card-label">T2606/Test/Var3</div>
         <div>
           <span class="card-value" id="val3">--</span>
-          <span class="card-unit"></span>
+          <span class="card-unit" id="unit3"></span>
         </div>
         <div class="card-type"></div>
         <div class="card-bar">
@@ -412,13 +412,15 @@
   const elVal3      = document.getElementById('val3');
   const elUnit1     = document.getElementById('unit1');
   const elunit2     = document.getElementById('unit2');
+  const elunit3     = document.getElementById('unit3');
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
 
    // ── Unités ───────────────────────────────────────
    elUnit1.textContent = '°C';
-   elunit2.textContent = 'bar';
+   elunit2.textContent = '°C';
+   elunit3.textContent = 'bar';
 
    // ── Graphique canvas ───────────────────────────────────────
    const canvas = document.getElementById('chart');
