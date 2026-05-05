@@ -424,34 +424,6 @@
 
     </div>
   </div>
-
-  <!-- Historique graphique -->
-   <div class="chart-container">
-    <div class="chart-header">
-      <div class="chart-title">// Historique</div>
-      <div class="chart-legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--accent)"></div>
-          reTestVal1
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--accent2)"></div>
-          usTestVal2
-        </div>
-      </div>
-    </div>
-    <canvas id="chart"></canvas>
-  </div>
-
-  <!-- Log -->
-  <div class="log-container">
-    <div class="log-header">
-      <div class="log-title">// Journal MQTT</div>
-      <button class="log-clear" onclick="clearLog()">Effacer</button>
-    </div>
-    <div id="log"></div>
-  </div>
-
 </main>
 
 <footer>
@@ -563,14 +535,7 @@
     el.style.width = pct + '%';
   }
 
-  // ── Flash valeur ───────────────────────────────────────────
-  function flashValue(el) {
-    el.classList.remove('updated');
-    void el.offsetWidth;
-    el.classList.add('updated');
-    setTimeout(() => el.classList.remove('updated'), 500);
-  }
-
+ 
   // ── Connexion MQTT ─────────────────────────────────────────
   addLog('Connexion à ' + BROKER + '...', '');
 
