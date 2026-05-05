@@ -354,13 +354,6 @@
     el.style.width = pct + '%';
   }
 
-  // ── Flash valeur ───────────────────────────────────────────
-  function flashValue(el) {
-    el.classList.remove('updated');
-    void el.offsetWidth;
-    el.classList.add('updated');
-    setTimeout(() => el.classList.remove('updated'), 500);
-  }
 
   // ── Connexion MQTT ─────────────────────────────────────────
 
@@ -400,13 +393,11 @@
 
       if (topic === TOPIC1) {
         elVal1.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
-        flashValue(elVal1);
         updateBar(elBar1, Math.abs(value), 100);
       }
 
       if (topic === TOPIC2) {
         elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        flashValue(elVal2);
         updateBar(elBar2, Math.abs(value), 255);
       }
 
