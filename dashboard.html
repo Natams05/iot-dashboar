@@ -239,23 +239,6 @@
       color: var(--muted);
     }
 
-    /* Bar indicator */
-    .card-bar {
-      margin-top: 16px;
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .card-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-radius: 2px;
-      width: 0%;
-      transition: width 0.6s ease;
-    }
-
     /* ── FOOTER ── */
     footer {
       position: relative;
@@ -303,7 +286,6 @@
         </div>
         <div class="card-type">REAL · Float</div>
         <div class="card-bar">
-          <div class="card-bar-fill" id="bar1"></div>
         </div>
       </div>
 
@@ -316,7 +298,6 @@
         </div>
         <div class="card-type">USINT · Unsigned Int</div>
         <div class="card-bar">
-          <div class="card-bar-fill" id="bar2" style="background: linear-gradient(90deg, var(--accent2), #ff9f1c);"></div>
         </div>
       </div>
 
@@ -340,21 +321,10 @@
   // ── Éléments DOM ───────────────────────────────────────────
   const elVal1      = document.getElementById('val1');
   const elVal2      = document.getElementById('val2');
-  const elBar1      = document.getElementById('bar1');
-  const elBar2      = document.getElementById('bar2');
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
   
-
-
-  // ── Barre de progression ───────────────────────────────────
-  function updateBar(el, value, max) {
-    const pct = Math.min(100, Math.max(0, (value / max) * 100));
-    el.style.width = pct + '%';
-  }
-
-
   // ── Connexion MQTT ─────────────────────────────────────────
 
   const client = mqtt.connect(BROKER, {
@@ -393,12 +363,10 @@
 
       if (topic === TOPIC1) {
         elVal1.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
-        updateBar(elBar1, Math.abs(value), 100);
       }
 
       if (topic === TOPIC2) {
         elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        updateBar(elBar2, Math.abs(value), 255);
       }
 
       elUpdate.textContent = now;
