@@ -434,7 +434,7 @@
     if (history.val3.length < 2) return;
 
     const datasets = [
-      { data: history.val3, color: '--accent3' },
+      { data: history.val3, color: '#00d4ff' },
       
     ];
 
@@ -442,8 +442,8 @@
       if (data.length < 2) return;
 
       const all  = history.val3;
-      const minV = 0;
-      const maxV = 100;
+      const minV = Math.min(...all);
+      const maxV = Math.max(...all) || 1;
       const range = maxV - minV || 1;
 
       const pts = data.map((v, i) => ({
