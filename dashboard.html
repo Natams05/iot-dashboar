@@ -405,7 +405,6 @@
  
   // ── État ───────────────────────────────────────────────────
   const history = { val3: []};
-  elUnit1.textContent = '°C';
 
   // ── Éléments DOM ───────────────────────────────────────────
   const elVal1      = document.getElementById('val1');
@@ -415,7 +414,10 @@
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
-  
+
+   // ── Unités ───────────────────────────────────────
+   elUnit1.textContent = '°C';
+
    // ── Graphique canvas ───────────────────────────────────────
    const canvas = document.getElementById('chart');
   const ctx    = canvas.getContext('2d');
