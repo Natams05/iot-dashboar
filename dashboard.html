@@ -225,7 +225,7 @@
 
     .card-unit {
       font-family: var(--font-mono);
-      font-size: 16px;
+      font-size: 30px;
       color: var(--muted);
       margin-left: 6px;
     }
@@ -444,8 +444,8 @@
       if (data.length < 2) return;
 
       const all  = history.val3;
-      const minV = Math.min(...all);
-      const maxV = Math.max(...all) || 1;
+      const minV = 0;
+      const maxV = 100;
       const range = maxV - minV || 1;
 
       const pts = data.map((v, i) => ({
