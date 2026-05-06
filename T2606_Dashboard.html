@@ -458,55 +458,89 @@
 
   function drawChart() {
     const w = canvas.width, h = canvas.height;
+    const PADDING_LEFT = 55; // espace pour les labels à gauche
+    const PADDING_TOP  = 10;
+    const PADDING_BOT  = 10;
     ctx.clearRect(0, 0, w, h);
 
     if (history.val1.length < 2) return;
 
-    const datasets = [
-      { data: history.val1, color: '#D99A45' },
-      
-    ];
+    const data  = history.val1;
+    const color = '#D99A45';
+    const minV  = Math.min(...data);
+    const maxV  = Math.max(...data);
+    const range = maxV - minV || 1;
 
-    datasets.forEach(({ data, color }) => {
-      if (data.length < 2) return;
+    // Mise à jour légende texte
+    elLgdMin.textContent = `MIN: ${minV.toFixed(1)} °C`;
+    elLgdMax.textContent = `MAX: ${maxV.toFixed(1)} °C`;
 
-      const all  = history.val1;
-      const minV = Math.min(...history.val1);
-      const maxV = Math.max(...history.val1);
-      const range = maxV - minV || 1;
+    // Fonction de conversion valeur → pixel Y
+    const toY = v => h - PADDING_BOT - ((v - minV) / range) * (h - PADDING_TOP - PADDING_BOT);
 
+    // Calcul des points
+    const pts = data.map((v, i) => ({
+      x: PADDING_LEFT + (i / (data.length - 1)) * (w - PADDING_LEFT),
+      y: toY(v)
+    }));
 
-      elLgdMin.textContent = `MIN: ${minV.toFixed(1)} °C`;
-      elLgdMax.textContent = `MAX: ${maxV.toFixed(1)} °C`;
+    // ── Ligne MIN pointillée ──
+    const yMin = toY(minV);
+    ctx.beginPath();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = '#4a6278';
+    ctx.lineWidth = 1;
+    ctx.moveTo(PADDING_LEFT, yMin);
+    ctx.lineTo(w, yMin);
+    ctx.stroke();
 
+    // ── Ligne MAX pointillée ──
+    const yMax = toY(maxV);
+    ctx.beginPath();
+    ctx.moveTo(PADDING_LEFT, yMax);
+    ctx.lineTo(w, yMax);
+    ctx.stroke();
+    ctx.setLineDash([]);
 
-      const pts = data.map((v, i) => ({
-        x: (i / (data.length - 1)) * w,
-        y: h - ((v - minV) / range) * (h - 20) - 10
-      }));
+    // ── Labels MIN/MAX sur le côté gauche ──
+    ctx.font = '11px Share Tech Mono, monospace';
+    ctx.fillStyle = '#c8d6e5';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${maxV.toFixed(1)}°`, PADDING_LEFT - 4, yMax + 4);
+    ctx.fillText(`${minV.toFixed(1)}°`, PADDING_LEFT - 4, yMin + 4);
 
-      
-      // Ligne
-      ctx.beginPath();
-      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-      ctx.strokeStyle = color;
-      ctx.lineWidth   = 2;
-      ctx.stroke();
+    // ── Zone remplie sous la courbe ──
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, h - PADDING_BOT);
+    pts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(pts[pts.length - 1].x, h - PADDING_BOT);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, color + '55');
+    grad.addColorStop(1, color + '00');
+    ctx.fillStyle = grad;
+    ctx.fill();
 
-      // Point final
-      const last = pts[pts.length - 1];
-      ctx.beginPath();
-      ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-    });
+    // ── Courbe ──
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = 2;
+    ctx.stroke();
 
-    
-  drawMinMaxLabel(minV, `MIN ${minV.toFixed(1)} °C`, '#c8d6e5');
-  drawMinMaxLabel(maxV, `MAX ${maxV.toFixed(1)} °C`, '#c8d6e5')
+    // ── Point final ──
+    const last = pts[pts.length - 1];
+    ctx.beginPath();
+    ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
 
-
-  }
+    // ── Valeur actuelle à côté du point final ──
+    ctx.font = '11px Share Tech Mono, monospace';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.fillText(`${data[data.length-1].toFixed(1)}°`, last.x + 8, last.y + 4);
+}
 
   // ── Connexion MQTT ─────────────────────────────────────────
 
