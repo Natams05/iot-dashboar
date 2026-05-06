@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IOT2050 — Dashboard S7-1500</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #1b283b;
+      --panel:     #111820;
+      --border:    #1e2d3d;
+      --accent:    #D99A45;
+      --accent2:   #ff6b35;
+      --accent3:   #D99A45;
+      --green:     #39ff14;
+      --dgreen:    #009036;
+      --text:      #c8d6e5;
+      --muted:     #7d9ebd;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-body: 'Barlow', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(27, 40, 59, 1);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+
+    .logo-img {
+      height: 50px;
+      width: auto;
+      border-radius: 6px;
+      border: 2px solid var(--bg);
+      object-fit: contain;
+    }
+
+
+    .logo-icon {
+      width: 50px; height: 50px;
+      border: 2px solid var(--dgreen);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--dgreen);
+      box-shadow: 0 0 12px rgba(0,212,255,0.3);
+    }
+
+    .logo-text {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--accent3);
+      text-transform: uppercase;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* Status indicator */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .status-info{
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+      text-align: right;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .status-dot.connected {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.error {
+      background: var(--accent2);
+      box-shadow: 0 0 8px var(--accent2);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    #status-text { color: var(--muted); }
+
+    .timestamp {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      border-left: 1px solid var(--border);
+      padding-left: 10px;
+    }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* ── CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card-label {
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .card-value {
+      font-family: var(--font-mono);
+      font-size: 52px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1;
+      transition: color 0.3s;
+      letter-spacing: 2px;
+    }
+
+    .card-value.updated {
+      color: var(--accent);
+      animation: flash 0.5s ease;
+    }
+
+    @keyframes flash {
+      0%   { text-shadow: 0 0 20px var(--accent); }
+      100% { text-shadow: none; }
+    }
+
+    .card-unit {
+      font-family: var(--font-mono);
+      font-size: 30px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .card-type {
+      margin-top: 12px;
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+    }
+
+/* ── CHART ── */
+.chart-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-title {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .legend-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 180px !important;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 14px 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="CPNV_ES.png" alt="Logo CPNV_ES" class="logo-img">
+    <div>
+      <div class="logo-text">T2606 Dashboard</div>
+      <div class="logo-sub">Torréfaction du café - T2512</div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <div class="status-dot" id="status-dot"></div>
+    <div class="status-info">
+    <span id="status-text">DISCONNECTED</span>
+    <div class="timestamp" id="last-update">--:--</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Valeurs temps réel -->
+   <!-- Var 1 -->
+  <div>
+    <div class="section-label">Station 1</div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-tag">Température torréfacteur</div>
+        <div class="card-label">T2606/Siemens/TempTorefacteur</div>
+        <div>
+          <span class="card-value" id="val1">--</span>
+          <span class="card-unit" id="unit1"></span>
+        </div>
+        <div class="card-type"></div>
+        <div class="card-bar">
+        </div>
+      </div>
+
+      <!-- Historique graphique -->
+      <div class="chart-container">
+      <div class="chart-header">
+        <div class="chart-title">Graphe température</div>
+          <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--accent)"></div>
+              Température
+            </div>
+          </div>
+          <div class="legend-item" id="legend-min">Min: --</div>
+          <div class="legend-item" id="legend-max">Max: --</div>
+      </div>
+      <canvas id="chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label">Station 2</div>
+    <div class="cards">
+
+      <!-- Var 2 -->
+      <div class="card">
+        <div class="card-tag">Température grain</div>
+        <div class="card-label">T2606/Test/Var2</div>
+        <div>
+          <span class="card-value" id="val2">--</span>
+          <span class="card-unit" id="unit2"></span>
+        </div>
+        <div class="card-type"></div>
+        <div class="card-bar">
+        </div>
+      </div>
+
+      <!-- Var 3 -->
+      <div class="card">
+        <div class="card-tag">Niveau de vide</div>
+        <div class="card-label">T2606/Test/Var3</div>
+        <div>
+          <span class="card-value" id="val3">--</span>
+          <span class="card-unit" id="unit3"></span>
+        </div>
+        <div class="card-type"></div>
+        <div class="card-bar">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+ 
+
+<footer>
+  <span>broker.hivemq.com:8884 · T2606/Test/Var1 · T2606/Test/Var2</span>
+</footer>
+
+<script>
+  // ── Configuration ──────────────────────────────────────────
+  const BROKER  = 'wss://broker.hivemq.com:8884/mqtt';
+  const TOPIC1  = 'T2606/Test/Var1';
+  const TOPIC2  = 'T2606/Test/Var2';
+  const TOPIC3  = 'T2606/Test/Var3';
+  const MAX_PTS = 30;
+ 
+  // ── État ───────────────────────────────────────────────────
+  const history = { val1: []};
+
+  // ── Éléments DOM ───────────────────────────────────────────
+  const elVal1      = document.getElementById('val1');
+  const elVal2      = document.getElementById('val2');
+  const elVal3      = document.getElementById('val3');
+  const elUnit1     = document.getElementById('unit1');
+  const elunit2     = document.getElementById('unit2');
+  const elunit3     = document.getElementById('unit3');
+  const elDot       = document.getElementById('status-dot');
+  const elStatus    = document.getElementById('status-text');
+  const elUpdate    = document.getElementById('last-update');
+  const elLgdMin    = document.getElementById('legend-min');
+  const elLgdMax    = document.getElementById('legend-max');
+
+   // ── Unités ───────────────────────────────────────
+   elUnit1.textContent = '°C';
+   elunit2.textContent = '°C';
+   elunit3.textContent = 'bar';
+
+   // ── Graphique canvas ───────────────────────────────────────
+   const canvas = document.getElementById('chart');
+   const ctx    = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
+
+  function drawChart() {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    if (history.val1.length < 2) return;
+
+    const datasets = [
+      { data: history.val1, color: '#D99A45' },
+      
+    ];
+
+    datasets.forEach(({ data, color }) => {
+      if (data.length < 2) return;
+
+      const all  = history.val1;
+      const minV = Math.min(...history.val1);
+      const maxV = Math.max(...history.val1);
+      const range = maxV - minV || 1;
+
+
+      elLgdMin.textContent = `MIN: ${minV.toFixed(1)} °C`;
+      elLgdMax.textContent = `MAX: ${maxV.toFixed(1)} °C`;
+
+
+      const pts = data.map((v, i) => ({
+        x: (i / (data.length - 1)) * w,
+        y: h - ((v - minV) / range) * (h - 20) - 10
+      }));
+
+      
+      // Ligne
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+
+      // Point final
+      const last = pts[pts.length - 1];
+      ctx.beginPath();
+      ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    });
+
+    
+  drawMinMaxLabel(minV, `MIN ${minV.toFixed(1)} °C`, '#c8d6e5');
+  drawMinMaxLabel(maxV, `MAX ${maxV.toFixed(1)} °C`, '#c8d6e5')
+
+
+  }
+
+  // ── Connexion MQTT ─────────────────────────────────────────
+
+  const client = mqtt.connect(BROKER, {
+    clientId: 'dashboard_' + Math.random().toString(16).slice(2, 8),
+    clean: true,
+    reconnectPeriod: 3000,
+  });
+
+  client.on('connect', () => {
+    elDot.className    = 'status-dot connected';
+    elStatus.textContent = 'CONNECTED';
+    client.subscribe(TOPIC1, err => {
+    });
+    client.subscribe(TOPIC2, err => {
+    });
+    client.subscribe(TOPIC3, err => {
+    });
+  });
+
+  client.on('error', err => {
+    elDot.className    = 'status-dot error';
+    elStatus.textContent = 'ERROR';
+  });
+
+  client.on('offline', () => {
+    elDot.className    = 'status-dot';
+    elStatus.textContent = 'DISCONNECTED';
+  });
+
+  client.on('reconnect', () => {
+    elStatus.textContent = 'RECONNECTING...';
+  });
+
+  client.on('message', (topic, message) => {
+    try {
+      const value = parseFloat(message.toString());
+      const now   = new Date().toLocaleTimeString('fr-CH');
+
+      if (topic === TOPIC1) {
+        elVal1.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
+        history.val1.push(isNaN(value) ? 0 : value);
+        if (history.val1.length > MAX_PTS) history.val1.shift();
+        drawChart();
+      }
+
+      if (topic === TOPIC2) {
+        elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
+      }
+
+      if (topic === TOPIC3) {
+        elVal3.textContent = isNaN(value) ? message.toString() : parseInt(value);
+      }
+
+      elUpdate.textContent = now;
+    } catch (e) {
+    }
+  });
+</script>
+</body>
+</html>
