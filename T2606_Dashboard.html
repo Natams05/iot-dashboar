@@ -467,14 +467,11 @@
 
     const data  = history.val1;
     const color = '#D99A45';
-    const minV  = Math.min(...data);
-    const maxV  = Math.max(...data);
+    const minV  = 0;
+    const maxV  = 100;
     const range = maxV - minV || 1;
 
-    // Mise à jour légende texte
-    elLgdMin.textContent = `MIN: ${minV.toFixed(1)} °C`;
-    elLgdMax.textContent = `MAX: ${maxV.toFixed(1)} °C`;
-
+    
     // Fonction de conversion valeur → pixel Y
     const toY = v => h - PADDING_BOT - ((v - minV) / range) * (h - PADDING_TOP - PADDING_BOT);
 
