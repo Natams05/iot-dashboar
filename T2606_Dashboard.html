@@ -342,10 +342,9 @@
 
   <!-- Valeurs temps réel -->
    <!-- Var 1 -->
-  <div>
+   <div>
     <div class="section-label">Station 1</div>
     <div class="cards">
-
       <div class="card">
         <div class="card-tag">Température torréfacteur</div>
         <div class="card-label">T2606/Siemens/TempTorefacteur</div>
@@ -353,24 +352,23 @@
           <span class="card-value" id="val1">--</span>
           <span class="card-unit" id="unit1"></span>
         </div>
-        </div>
       </div>
+    </div>
 
       <!-- Historique graphique -->
-      <div class="chart-container">
-      <div class="chart-header">
-        <div class="chart-title">Graphe température</div>
+      <div class="chart-container" style="margin-top:20px">
+        <div class="chart-header">
+          <div class="chart-title">Graphe température</div>
           <div class="chart-legend">
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--accent)"></div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#D99A45"></div>
               Température
             </div>
           </div>
-      </div>
-      <canvas id="chart"></canvas>
+        </div>
+        <canvas id="chart"></canvas>
       </div>
     </div>
-  </div>
 
   <div>
     <div class="section-label">Station 2</div>
@@ -384,7 +382,6 @@
           <span class="card-value" id="val2">--</span>
           <span class="card-unit" id="unit2"></span>
         </div>
-        </div>
       </div>
 
       <!-- Var 3 -->
@@ -395,9 +392,7 @@
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
         </div>
-        </div>
       </div>
-
     </div>
   </div>
 </main>
@@ -429,8 +424,6 @@
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
-  const elLgdMin    = document.getElementById('legend-min');
-  const elLgdMax    = document.getElementById('legend-max');
 
    // ── Unités ───────────────────────────────────────
    elUnit1.textContent = '°C';
