@@ -445,7 +445,7 @@
   const eletat1     = document.getElementById('etat1');
 
    // ── Unités ───────────────────────────────────────
-   elUnit1.textContent = '°C';
+   elnnit1.textContent = '°C';
    elunit2.textContent = '°C';
    elunit3.textContent = 'bar';
 
@@ -599,7 +599,7 @@
       }
 
       if (topic === TOPIC4) {
-        eletat1.textContent =  message.toString();
+        if(eletat1) eletat1.textContent =  message.toString();
       }
 
       elUpdate.textContent = now;
