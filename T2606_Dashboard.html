@@ -11,7 +11,7 @@
       --bg:        #1b283b;
       --panel:     #111820;
       --border:    #1e2d3d;
-      --accent:    #33ff00;
+      --accent:    #D99A45;
       --accent2:   #ff6b35;
       --accent3:   #D99A45;
       --green:     #39ff14;
@@ -259,6 +259,16 @@
       color: var(--muted);
     }
 
+    .Space-state {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
 /* ── CHART ── */
 .chart-container {
       background: var(--panel);
@@ -345,6 +355,12 @@
    <div>
     <div class="section-label">Station 1</div>
     <div class="cards">
+      <div class="Space-state">
+        <div class="card-tag">État machine</div>
+        <div>
+          <span> class="card-value" id="etat1" </span>
+        </div>
+      </div>
       <div class="card">
         <div class="card-tag">Température torréfacteur</div>
         <div class="card-label">T2606/Siemens/TempTorefacteur</div>
@@ -409,6 +425,7 @@
   const TOPIC1  = 'T2606/Test/Var1';
   const TOPIC2  = 'T2606/Test/Var2';
   const TOPIC3  = 'T2606/Test/Var3';
+  const TOPIC4  = 'T2606/Test/Var4';
   const MAX_PTS = 30;
  
   // ── État ───────────────────────────────────────────────────
@@ -424,6 +441,7 @@
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
+  const eletat1     = document.getElementById('etat1');
 
    // ── Unités ───────────────────────────────────────
    elUnit1.textContent = '°C';
@@ -541,6 +559,8 @@
     });
     client.subscribe(TOPIC3, err => {
     });
+    client.subscribe(TOPIC4, err =>{
+    });
   });
 
   client.on('error', err => {
@@ -575,6 +595,10 @@
 
       if (topic === TOPIC3) {
         elVal3.textContent = isNaN(value) ? message.toString() : parseInt(value);
+      }
+
+      if (topic === TOPIC4) {
+        eletat1.textContent =  message.toString();
       }
 
       elUpdate.textContent = now;
