@@ -263,10 +263,23 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 10px;
+      padding: 28px;
       position: relative;
       overflow: hidden;
       transition: border-color 0.3s, transform 0.2s;
+      width: 300px;
+      height: 100px;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .State-value {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1;
+      transition: color 0.3s;
+      letter-spacing: 1px;
     }
 
 /* ── CHART ── */
@@ -316,6 +329,23 @@
       height: 180px !important;
     }
 
+    /* Bar indicator */
+    .card-bar {
+      margin-top: 16px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .card-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      width: 100%;
+      transition: width 0.6s ease;
+    }
+
     /* ── FOOTER ── */
     footer {
       position: relative;
@@ -355,24 +385,20 @@
    <!-- Var 1 -->
    <div>
     <div class="section-label">Station 1</div>
-    <div class="cards">
-      <div class="Space-state">
-        <div class="card-tag">État machine</div>
-        <div>
-          <span class="card-value" id="etat1">--</span>
-        </div>
+    <div class="Space-state">
+      <div class="card-tag">État machine</div>
+      <div>
+        <span class="State-value" id="etat1">--</span>
       </div>
+    </div>
+    <div class="cards">
       <div class="card">
         <div class="card-tag">Température torréfacteur</div>
         <div class="card-label">T2606/Siemens/TempTorefacteur</div>
         <div>
           <span class="card-value" id="val1">--</span>
           <span class="card-unit" id="unit1"></span>
-        </div>
-      </div>
-    </div>
-
-      <!-- Historique graphique -->
+           <!-- Historique graphique -->
       <div class="chart-container" style="margin-top:20px">
         <div class="chart-header">
           <div class="chart-title">Graphe température</div>
@@ -385,6 +411,9 @@
         </div>
         <canvas id="chart"></canvas>
       </div>
+    </div>
+        </div>
+      </div>    
     </div>
 
   <div>
