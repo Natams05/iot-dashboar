@@ -662,9 +662,9 @@ function updateGauge(value, min, max) {
   document.getElementById('gauge-needle').style.transform 
     = `rotate(${needleAngle}deg)`;
 
-   needleAngle = -90 + pct * 180;
+  const fillangle = 45 + pct * 180;
   document.getElementById('gauge-fill').style.transform 
-    = `rotate(${needleAngle}deg)`;
+    = `rotate(${fillangle}deg)`;
 
   // Valeur texte
   document.getElementById('gauge-value').textContent 
