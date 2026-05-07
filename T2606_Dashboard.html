@@ -347,100 +347,100 @@
 
     /* ── Manomètre ── */ 
     .gauge-container {
-  position: relative;
-  width: 200px;
-  height: 200px; /* carré complet */
-  margin: auto;
-}
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: auto;
+    }
 
-.gauge-bg {
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  /* Seulement le quart bas-gauche coloré */
-  border: 15px solid transparent;
-  border-bottom-color: #1e2d3d;
-  border-left-color: #1e2d3d;
-  top: 20px;
-  left: 20px;
-}
+    .gauge-bg {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 15px solid transparent;
+      border-top-color: #1e2d3d;
+      border-left-color: #1e2d3d;
+      top: 0px;
+      left: 0px;
+      transform: rotate(0deg);
+    }
 
-.gauge-fill {
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  border: 15px solid transparent;
-  border-bottom-color: #D99A45;
-  border-left-color: #D99A45;
-  top: 20px;
-  left: 20px;
-  transform-origin: center;
-  transform: rotate(0deg);
-  transition: transform 0.5s ease;
-}
+    .gauge-fill {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 15px solid transparent;
+      border-top-color: #D99A45;
+      border-left-color: #D99A45;
+      top: 0px;
+      left: 0px;
+      transform-origin: center;
+      transform: rotate(0deg);
+      transition: transform 0.5s ease;
+      /* caché par défaut car pression = 0 */
+      opacity: 0;
+    }
 
-.gauge-needle {
-  position: absolute;
-  width: 2px;
-  height: 65px;
-  background: #c8d6e5;
-  /* Pivot en bas à droite = coin du quart de cercle */
-  bottom: 20px;
-  right: 20px;
-  transform-origin: bottom center;
-  transform: rotate(0deg);
-  transition: transform 0.5s ease;
-}
+    .gauge-needle {
+      position: absolute;
+      width: 2px;
+      height: 75px;
+      background: #c8d6e5;
+      bottom: 10px;
+      right: 10px;
+      transform-origin: bottom center;
+      /* 12h = -90° par rapport au pivot */
+      transform: rotate(-90deg);
+      transition: transform 0.5s ease;
+    }
 
-.gauge-center {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: #D99A45;
-  border-radius: 50%;
-  bottom: 14px;
-  right: 14px;
-}
+    .gauge-center {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #D99A45;
+      border-radius: 50%;
+      bottom: 4px;
+      right: 4px;
+    }
 
-.gauge-value {
-  position: absolute;
-  top: 50%;
-  left: 30%;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 28px;
-  color: #c8d6e5;
-}
+    .gauge-value {
+      position: absolute;
+      top: 45%;
+      left: 35%;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 24px;
+      color: #c8d6e5;
+    }
 
-.gauge-unit {
-  position: absolute;
-  top: calc(50% + 35px);
-  left: 30%;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 12px;
-  color: #7d9ebd;
-}
+    .gauge-unit {
+      position: absolute;
+      top: calc(45% + 32px);
+      left: 35%;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: #7d9ebd;
+    }
 
-/* Labels min/max */
-.gauge-min {
-  position: absolute;
-  bottom: 5px;
-  left: 20px;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: #7d9ebd;
-}
+    .gauge-min {
+      position: absolute;
+      bottom: 10px;
+      left: 0px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: #7d9ebd;
+    }
 
-.gauge-max {
-  position: absolute;
-  top: 20px;
-  right: 5px;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: #7d9ebd;
-}
-
+    .gauge-max {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: #7d9ebd;
+    }
     /* ── FOOTER ── */
     footer {
       position: relative;
@@ -682,17 +682,26 @@
 
 function updateGauge(value, min, max) {
   const pct = (value - min) / (max - min);
+  // pct = 0 quand value = -2 (9h)
+  // pct = 1 quand value = 0  (12h)
 
-  // Aiguille : de 0° (min) à -90° (max)
-  // On part de 0° (pointant vers le bas) jusqu'à -90° (pointant à gauche)
-  const needleAngle = 0 - pct * 90;
+  // Aiguille : -90° = 12h, -180° = 9h
+  const needleAngle = -90 - (1 - pct) * 90;
   document.getElementById('gauge-needle').style.transform
     = `rotate(${needleAngle}deg)`;
 
-  // Arc : suit l'aiguille
-  const fillAngle = 0 - pct * 90;
-  document.getElementById('gauge-fill').style.transform
-    = `rotate(${fillAngle}deg)`;
+  // Arc orange : visible seulement si pression < 0
+  // Plus la pression descend, plus l'arc est grand
+  if (pct < 1) {
+    document.getElementById('gauge-fill').style.opacity = '1';
+    // Rotation de l'arc pour couvrir la zone de -2 à valeur actuelle
+    const fillAngle = -(1 - pct) * 90;
+    document.getElementById('gauge-fill').style.transform
+      = `rotate(${fillAngle}deg)`;
+  } else {
+    // pression = 0 → arc caché
+    document.getElementById('gauge-fill').style.opacity = '0';
+  }
 
   // Valeur
   document.getElementById('gauge-value').textContent
