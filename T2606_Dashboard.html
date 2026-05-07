@@ -437,6 +437,8 @@
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
         </div>
+        <div><canvas id="gauge1" width="200" height="130"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -571,6 +573,78 @@
     ctx.fillText(`${data[data.length-1].toFixed(1)}°`, last.x + 8, last.y + 4);
 }
 
+// ── Manomètre canvas ───────────────────────────────────────
+
+function drawGauge(canvasId, value, min, max, unit) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width / 2;   // centre X
+  const cy = canvas.height / 1.2; // centre Y
+  const r = canvas.width * 0.35;  // rayon
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Angles (en radians)
+  // Le manomètre va de 225° à -45° (demi-cercle + un peu)
+  const startAngle = Math.PI * 0.75;   // 135°
+  const endAngle   = Math.PI * 2.25;   // 405°
+
+  // Convertir la valeur en angle
+  const pct = (value - min) / (max - min);
+  const valueAngle = startAngle + pct * (endAngle - startAngle);
+
+  // ── Arc de fond (gris) ──
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, endAngle);
+  ctx.strokeStyle = '#1e2d3d';
+  ctx.lineWidth = 15;
+  ctx.stroke();
+
+  // ── Arc coloré (valeur) ──
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, valueAngle);
+  ctx.strokeStyle = '#D99A45';
+  ctx.lineWidth = 15;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // ── Aiguille ──
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(
+    cx + (r * 0.7) * Math.cos(valueAngle),
+    cy + (r * 0.7) * Math.sin(valueAngle)
+  );
+  ctx.strokeStyle = '#c8d6e5';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // ── Centre de l'aiguille ──
+  ctx.beginPath();
+  ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#D99A45';
+  ctx.fill();
+
+  // ── Valeur au centre ──
+  ctx.font = 'bold 24px Share Tech Mono';
+  ctx.fillStyle = '#c8d6e5';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${value.toFixed(1)}`, cx, cy + 30);
+
+  // ── Unité ──
+  ctx.font = '12px Share Tech Mono';
+  ctx.fillStyle = '#7d9ebd';
+  ctx.fillText(unit, cx, cy + 48);
+
+  // ── Min et Max ──
+  ctx.font = '11px Share Tech Mono';
+  ctx.fillStyle = '#7d9ebd';
+  ctx.textAlign = 'left';
+  ctx.fillText(min, cx - r - 5, cy + 15);
+  ctx.textAlign = 'right';
+  ctx.fillText(max, cx + r + 5, cy + 15);
+}
+
   // ── Connexion MQTT ─────────────────────────────────────────
 
   const client = mqtt.connect(BROKER, {
@@ -624,6 +698,7 @@
 
       if (topic === TOPIC3) {
         elVal3.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        drawGauge('gauge1', elVal3.textContent, -2, 10, 'bar');
       }
 
       if (topic === TOPIC4) {
