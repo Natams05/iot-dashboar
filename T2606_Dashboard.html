@@ -347,76 +347,99 @@
 
     /* ── Manomètre ── */ 
     .gauge-container {
-      position: relative;
-      width: 200px;
-      height: 120px;
-      margin: auto;
-      overflow: hidden; /* cache la moitié basse */
-    }
+  position: relative;
+  width: 200px;
+  height: 200px; /* carré complet */
+  margin: auto;
+}
 
-    .gauge-bg {
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      border: 15px solid #1e2d3d; /* couleur fond */
-      top: 0; left: 0;
-    }
+.gauge-bg {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  /* Seulement le quart bas-gauche coloré */
+  border: 15px solid transparent;
+  border-bottom-color: #1e2d3d;
+  border-left-color: #1e2d3d;
+  top: 20px;
+  left: 20px;
+}
 
-    .gauge-fill {
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      border: 15px solid transparent;
-      border-top-color: var(--accent);    /* couleur valeur */
-      border-right-color: var(--accent);
-      top: 0; left: 0;
-      transform: rotate(45deg); /* ← mis à jour par JS */
-      transition: transform 0.5s ease;
-    }
+.gauge-fill {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 15px solid transparent;
+  border-bottom-color: #D99A45;
+  border-left-color: #D99A45;
+  top: 20px;
+  left: 20px;
+  transform-origin: center;
+  transform: rotate(0deg);
+  transition: transform 0.5s ease;
+}
 
-    .gauge-needle {
-      position: absolute;
-      width: 2px;
-      height: 70px;
-      background: #c8d6e5;
-      bottom: 0;
-      left: 50%;
-      transform-origin: bottom center;
-      transform: rotate(-90deg); /* ← mis à jour par JS */
-      transition: transform 0.5s ease;
-    }
+.gauge-needle {
+  position: absolute;
+  width: 2px;
+  height: 65px;
+  background: #c8d6e5;
+  /* Pivot en bas à droite = coin du quart de cercle */
+  bottom: 20px;
+  right: 20px;
+  transform-origin: bottom center;
+  transform: rotate(0deg);
+  transition: transform 0.5s ease;
+}
 
-    .gauge-center {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: var(--accent);
-      border-radius: 50%;
-      bottom: -6px;
-      left: calc(50% - 6px);
-    }
+.gauge-center {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #D99A45;
+  border-radius: 50%;
+  bottom: 14px;
+  right: 14px;
+}
 
-    .gauge-value {
-      position: absolute;
-      bottom: -30px; /* en dessous du demi-cercle */
-      width: 100%;
-      text-align: center;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 28px;
-      color: #c8d6e5;
-    }
+.gauge-value {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 28px;
+  color: #c8d6e5;
+}
 
-    .gauge-unit {
-      position: absolute;
-      bottom: -52px;
-      width: 100%;
-      text-align: center;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: #7d9ebd;
-    }
+.gauge-unit {
+  position: absolute;
+  top: calc(50% + 35px);
+  left: 30%;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: #7d9ebd;
+}
+
+/* Labels min/max */
+.gauge-min {
+  position: absolute;
+  bottom: 5px;
+  left: 20px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #7d9ebd;
+}
+
+.gauge-max {
+  position: absolute;
+  top: 20px;
+  right: 5px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #7d9ebd;
+}
 
     /* ── FOOTER ── */
     footer {
@@ -517,7 +540,10 @@
           <div class="gauge-center"></div>
           <div class="gauge-value" id="gauge-value">--</div>
           <div class="gauge-unit">bar</div>
+          <div class="gauge-min">-2</div>
+          <div class="gauge-max">0</div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -656,18 +682,20 @@
 
 function updateGauge(value, min, max) {
   const pct = (value - min) / (max - min);
-  
-  // Aiguille : de -90° (min) à +90° (max)
-  const needleAngle = -90 + pct * 180;
-  document.getElementById('gauge-needle').style.transform 
+
+  // Aiguille : de 0° (min) à -90° (max)
+  // On part de 0° (pointant vers le bas) jusqu'à -90° (pointant à gauche)
+  const needleAngle = 0 - pct * 90;
+  document.getElementById('gauge-needle').style.transform
     = `rotate(${needleAngle}deg)`;
 
-  const fillangle = 45 + pct * 180;
-  document.getElementById('gauge-fill').style.transform 
-    = `rotate(${fillangle}deg)`;
+  // Arc : suit l'aiguille
+  const fillAngle = 0 - pct * 90;
+  document.getElementById('gauge-fill').style.transform
+    = `rotate(${fillAngle}deg)`;
 
-  // Valeur texte
-  document.getElementById('gauge-value').textContent 
+  // Valeur
+  document.getElementById('gauge-value').textContent
     = value.toFixed(1);
 }
 
@@ -724,7 +752,7 @@ function updateGauge(value, min, max) {
 
       if (topic === TOPIC3) {
         elVal3.textContent = parseFloat(message.toString());
-        updateGauge(elVal3.textContent, -5, 5); // min=-5, max=5 bar
+        updateGauge(elVal3.textContent, -2, 0); // min=-5, max=5 bar
       }
 
       if (topic === TOPIC4) {
