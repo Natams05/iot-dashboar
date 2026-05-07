@@ -355,31 +355,31 @@
 
     .gauge-bg {
       position: absolute;
-      width: 160px;
-      height: 160px;
+      width: 300px;
+      height: 300px;
       border-radius: 50%;
       background: conic-gradient(
         from 270deg,
-        #1e2d3d 0deg 90deg,   /* arc foncé de 9h à 12h */
+        var(--accent) 0deg 90deg,   /* arc foncé de 9h à 12h */
         transparent 90deg      /* invisible ailleurs */
       );
-      top: 0px;
-      left: 0px;
+      top: 40px;
+      left: 40px;
+      
     }
 
     .gauge-fill {
       position: absolute;
-      width: 160px;
-      height: 160px;
+      width: 270px;
+      height: 270px;
       border-radius: 50%;
       background: conic-gradient(
         from 270deg,
-        #D99A45 0deg,          /* orange depuis 9h */
-        transparent 0deg       /* ← mis à jour par JS */
+        var(--panel) 0deg 90deg,   /* arc foncé de 9h à 12h */
+        transparent 90deg      /* invisible ailleurs */
       );
-      top: 0px;
-      left: 0px;
-      transition: background 0.5s ease;
+      top: 55px;
+      left: 55px;
     }
 
     .gauge-needle {
@@ -532,21 +532,14 @@
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
         </div>
+        <div class="gauge-container">
+          <div class="gauge-bg"></div>
+          <div class="gauge-fill"></div>
+          <div class="gauge-needle" id="gauge-needle"></div>
+          <div class="gauge-center"></div>
+          <div class="gauge-min">-2</div>
+          <div class="gauge-max">0</div>
         </div>
-        <div class="card">
-          <div class="card-tag">Niveau de vide</div>
-          <div class="card-label">T2606/Test/Var3</div>
-        
-          <div class="gauge-container">
-            <div class="gauge-bg"></div>
-            <div class="gauge-fill" id="gauge-fill"></div>
-            <div class="gauge-needle" id="gauge-needle"></div>
-            <div class="gauge-center"></div>
-            <div class="gauge-value" id="gauge-value">--</div>
-            <div class="gauge-unit">bar</div>
-            <div class="gauge-min">-2</div>
-            <div class="gauge-max">0</div>
-          </div>
         </div>
       </div>
     </div>
@@ -693,19 +686,6 @@ function updateGauge(value, min, max) {
   const needleAngle = -90 + (1 - pct) * 90;
   document.getElementById('gauge-needle').style.transform
     = `rotate(${needleAngle}deg)`;
-
-  // Arc orange : visible seulement si pression < 0
-  // Plus la pression descend, plus l'arc est grand
-  if (pct < 1) {
-    document.getElementById('gauge-fill').style.opacity = '1';
-    // Rotation de l'arc pour couvrir la zone de -2 à valeur actuelle
-    const fillAngle = (1 - pct) * 90;
-    document.getElementById('gauge-fill').style.transform
-      = `rotate(${fillAngle}deg)`;
-  } else {
-    // pression = 0 → arc caché
-    document.getElementById('gauge-fill').style.opacity = '0';
-  }
 
   // Valeur
   document.getElementById('gauge-value').textContent
