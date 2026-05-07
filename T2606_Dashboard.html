@@ -358,12 +358,13 @@
       width: 160px;
       height: 160px;
       border-radius: 50%;
-      border: 15px solid transparent;
-      border-top-color: #1e2d3d;
-      border-left-color: #1e2d3d;
+      background: conic-gradient(
+        from 270deg,
+        #1e2d3d 0deg 90deg,   /* arc foncé de 9h à 12h */
+        transparent 90deg      /* invisible ailleurs */
+      );
       top: 0px;
       left: 0px;
-      transform: rotate(0deg);
     }
 
     .gauge-fill {
@@ -371,16 +372,14 @@
       width: 160px;
       height: 160px;
       border-radius: 50%;
-      border: 15px solid transparent;
-      border-top-color: #D99A45;
-      border-left-color: #D99A45;
+      background: conic-gradient(
+        from 270deg,
+        #D99A45 0deg,          /* orange depuis 9h */
+        transparent 0deg       /* ← mis à jour par JS */
+      );
       top: 0px;
       left: 0px;
-      transform-origin: center;
-      transform: rotate(0deg);
-      transition: transform 0.5s ease;
-      /* caché par défaut car pression = 0 */
-      opacity: 0;
+      transition: background 0.5s ease;
     }
 
     .gauge-needle {
@@ -533,17 +532,22 @@
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
         </div>
-        <div class="gauge-container">
-          <div class="gauge-bg"></div>
-          <div class="gauge-fill" id="gauge-fill"></div>
-          <div class="gauge-needle" id="gauge-needle"></div>
-          <div class="gauge-center"></div>
-          <div class="gauge-value" id="gauge-value">--</div>
-          <div class="gauge-unit">bar</div>
-          <div class="gauge-min">-2</div>
-          <div class="gauge-max">0</div>
         </div>
-      </div>
+        <div class="card">
+          <div class="card-tag">Niveau de vide</div>
+          <div class="card-label">T2606/Test/Var3</div>
+        
+          <div class="gauge-container">
+            <div class="gauge-bg"></div>
+            <div class="gauge-fill" id="gauge-fill"></div>
+            <div class="gauge-needle" id="gauge-needle"></div>
+            <div class="gauge-center"></div>
+            <div class="gauge-value" id="gauge-value">--</div>
+            <div class="gauge-unit">bar</div>
+            <div class="gauge-min">-2</div>
+            <div class="gauge-max">0</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -686,7 +690,7 @@ function updateGauge(value, min, max) {
   // pct = 1 quand value = 0  (12h)
 
   // Aiguille : -90° = 12h, -180° = 9h
-  const needleAngle = -90 - (1 - pct) * 90;
+  const needleAngle = -90 + (1 - pct) * 90;
   document.getElementById('gauge-needle').style.transform
     = `rotate(${needleAngle}deg)`;
 
@@ -695,7 +699,7 @@ function updateGauge(value, min, max) {
   if (pct < 1) {
     document.getElementById('gauge-fill').style.opacity = '1';
     // Rotation de l'arc pour couvrir la zone de -2 à valeur actuelle
-    const fillAngle = -(1 - pct) * 90;
+    const fillAngle = (1 - pct) * 90;
     document.getElementById('gauge-fill').style.transform
       = `rotate(${fillAngle}deg)`;
   } else {
