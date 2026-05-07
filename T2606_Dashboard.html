@@ -685,7 +685,7 @@
 // ── Manomètre canvas ───────────────────────────────────────
 
 function updateGauge(value, min, max) {
-  const pct = (value - min) / (max - min);
+  const pct = (max - value) / (max - min);
   // pct = 0 quand value = -2 (9h)
   // pct = 1 quand value = 0  (12h)
 
