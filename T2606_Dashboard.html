@@ -345,6 +345,79 @@
       transition: width 0.6s ease;
     }
 
+    /* ── Manomètre ── */ 
+    .gauge-container {
+      position: relative;
+      width: 200px;
+      height: 120px;
+      margin: auto;
+      overflow: hidden; /* cache la moitié basse */
+    }
+
+    .gauge-bg {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 15px solid #1e2d3d; /* couleur fond */
+      top: 0; left: 0;
+    }
+
+    .gauge-fill {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 15px solid transparent;
+      border-top-color: var(--accent);    /* couleur valeur */
+      border-right-color: var(--accent);
+      top: 0; left: 0;
+      transform: rotate(45deg); /* ← mis à jour par JS */
+      transition: transform 0.5s ease;
+    }
+
+    .gauge-needle {
+      position: absolute;
+      width: 2px;
+      height: 70px;
+      background: #c8d6e5;
+      bottom: 0;
+      left: 50%;
+      transform-origin: bottom center;
+      transform: rotate(-90deg); /* ← mis à jour par JS */
+      transition: transform 0.5s ease;
+    }
+
+    .gauge-center {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      bottom: -6px;
+      left: calc(50% - 6px);
+    }
+
+    .gauge-value {
+      position: absolute;
+      bottom: -30px; /* en dessous du demi-cercle */
+      width: 100%;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 28px;
+      color: #c8d6e5;
+    }
+
+    .gauge-unit {
+      position: absolute;
+      bottom: -52px;
+      width: 100%;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      color: #7d9ebd;
+    }
+
     /* ── FOOTER ── */
     footer {
       position: relative;
@@ -437,7 +510,13 @@
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
         </div>
-        <div><canvas id="gauge1" width="200" height="130"></canvas>
+        <div class="gauge-container">
+          <div class="gauge-bg"></div>
+          <div class="gauge-fill" id="gauge-fill"></div>
+          <div class="gauge-needle" id="gauge-needle"></div>
+          <div class="gauge-center"></div>
+          <div class="gauge-value" id="gauge-value">--</div>
+          <div class="gauge-unit">bar</div>
         </div>
       </div>
     </div>
@@ -575,74 +654,17 @@
 
 // ── Manomètre canvas ───────────────────────────────────────
 
-function drawGauge(canvasId, value, min, max, unit) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  const cx = canvas.width / 2;   // centre X
-  const cy = canvas.height / 1.2; // centre Y
-  const r = canvas.width * 0.35;  // rayon
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Angles (en radians)
-  // Le manomètre va de 225° à -45° (demi-cercle + un peu)
-  const startAngle = Math.PI * 0.75;   // 135°
-  const endAngle   = Math.PI * 2.25;   // 405°
-
-  // Convertir la valeur en angle
+function updateGauge(value, min, max) {
   const pct = (value - min) / (max - min);
-  const valueAngle = startAngle + pct * (endAngle - startAngle);
+  
+  // Aiguille : de -90° (min) à +90° (max)
+  const needleAngle = -90 + pct * 180;
+  document.getElementById('gauge-needle').style.transform 
+    = `rotate(${needleAngle}deg)`;
 
-  // ── Arc de fond (gris) ──
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, startAngle, endAngle);
-  ctx.strokeStyle = '#1e2d3d';
-  ctx.lineWidth = 15;
-  ctx.stroke();
-
-  // ── Arc coloré (valeur) ──
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, startAngle, valueAngle);
-  ctx.strokeStyle = '#D99A45';
-  ctx.lineWidth = 15;
-  ctx.lineCap = 'round';
-  ctx.stroke();
-
-  // ── Aiguille ──
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(
-    cx + (r * 0.7) * Math.cos(valueAngle),
-    cy + (r * 0.7) * Math.sin(valueAngle)
-  );
-  ctx.strokeStyle = '#c8d6e5';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // ── Centre de l'aiguille ──
-  ctx.beginPath();
-  ctx.arc(cx, cy, 6, 0, Math.PI * 2);
-  ctx.fillStyle = '#D99A45';
-  ctx.fill();
-
-  // ── Valeur au centre ──
-  ctx.font = 'bold 24px Share Tech Mono';
-  ctx.fillStyle = '#c8d6e5';
-  ctx.textAlign = 'center';
-  ctx.fillText(`${value.toFixed(1)}`, cx, cy + 30);
-
-  // ── Unité ──
-  ctx.font = '12px Share Tech Mono';
-  ctx.fillStyle = '#7d9ebd';
-  ctx.fillText(unit, cx, cy + 48);
-
-  // ── Min et Max ──
-  ctx.font = '11px Share Tech Mono';
-  ctx.fillStyle = '#7d9ebd';
-  ctx.textAlign = 'left';
-  ctx.fillText(min, cx - r - 5, cy + 15);
-  ctx.textAlign = 'right';
-  ctx.fillText(max, cx + r + 5, cy + 15);
+  // Valeur texte
+  document.getElementById('gauge-value').textContent 
+    = value.toFixed(1);
 }
 
   // ── Connexion MQTT ─────────────────────────────────────────
