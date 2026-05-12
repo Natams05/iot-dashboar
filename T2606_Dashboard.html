@@ -578,6 +578,9 @@
       transition: height 0.5s ease;
       border-radius: 2px;
     }
+    .silo-fill-1.low {
+      background: linear-gradient(to top, #ff6b35, #ff6b3588);
+    }
 
     .silo-fill-2 {
       position: absolute;
@@ -588,6 +591,9 @@
       background: linear-gradient(to top, #4591d9, #4591d988);
       transition: height 0.5s ease;
       border-radius: 2px;
+    }
+    .silo-fill-2.low {
+      background: linear-gradient(to top, #ff6b35, #ff6b3588);
     }
 
     .silo-value {
@@ -650,7 +656,7 @@
         <div class="card-label">T2606/Siemens/TempTorefacteur</div>
         <div>
           <span class="card-value" id="TempTorre">--</span>
-          <span class="card-unit" id="unit11"></span>
+          <span class="card-unit" id="unit11">°C</span>
            <!-- Graphique Température -->
       <div class="chart-container" style="margin-top:20px">
         <div class="chart-header">
@@ -673,7 +679,7 @@
         <div class="card-content">
         <div>
           <span class="card-value" id="NiveStock1">--</span>
-          <span class="card-unit" id="unit12"></span>
+          <span class="card-unit" id="unit12">%</span>
           </div>
         <div class="silo-container">
           <div class="silo-labels">
@@ -707,8 +713,8 @@
         <div class="card-label">T2606/Siemens/St2/TempGrain</div>
         <div class="card-content">
           <div>
-            <span class="card-value" id="TempGrain"></span>
-            <span class="card-unit" id="unit21"></span>
+            <span class="card-value" id="TempGrain">--</span>
+            <span class="card-unit" id="unit21">°C</span>
           </div>
           <!-- Themomètre température -->
           <div class="thermometer">
@@ -731,7 +737,7 @@
         <div class="card-label">T2606/Siemens/St2/NiveauVide</div>
         <div>
           <span class="card-value" id="NivVide">--</span>
-          <span class="card-unit" id="unit22"></span>
+          <span class="card-unit" id="unit22">bar</span>
         </div>
         <!-- Manomètre niveau de vide -->
         <div class="gauge-container">
@@ -762,7 +768,7 @@
         <div class="card-label">T2606/Siemens/St3/EcartMeule</div>
         <div>
           <span class="card-value" id="EcartMeule">--</span>
-          <span class="card-unit" id="unit32"></span>
+          <span class="card-unit" id="unit32">mm</span>
         </div>
        </div>
        <!-- Niveau silo -->
@@ -772,7 +778,7 @@
         <div class="card-content">
         <div>
           <span class="card-value" id="NivStock3">--</span>
-          <span class="card-unit" id="unit31"></span>
+          <span class="card-unit" id="unit31">g</span>
           </div>
         <div class="silo-container">
           <div class="silo-labels">
@@ -806,7 +812,7 @@
         <div class="card-label">T2606/Siemens/St4/TemBloc</div>
         <div>
           <span class="card-value" id="TempBloc">--</span>
-          <span class="card-unit" id="unit41"></span>
+          <span class="card-unit" id="unit41">°C</span>
            <!-- Graphique Température -->
       <div class="chart-container" style="margin-top:20px">
         <div class="chart-header">
@@ -829,7 +835,7 @@
         <div class="card-content">
         <div>
           <span class="card-value" id="NivEau">--</span>
-          <span class="card-unit" id="unit42"></span>
+          <span class="card-unit" id="unit42">ml</span>
           </div>
         <div class="silo-container">
           <div class="silo-labels">
@@ -919,8 +925,7 @@
   const elDot          = document.getElementById('status-dot');
   const elStatus       = document.getElementById('status-text');
   const elUpdate       = document.getElementById('last-update');
- 
-  
+   
 
    // ── Unités ───────────────────────────────────────
 
@@ -1066,23 +1071,27 @@ function updateThermo(tubeId, bulbId, value, min, max) {
 // ── Barre Graphe ───────────────────────────────────────
 
 function updateSilo(fillId, value, min, max) {
-  const pct = Math.min(100, Math.max(0, (value - min) / (max - min) * 100));
 
-  // Hauteur de la barre
-  document.getElementById(fillId).style.height = pct + '%';
+const pct = Math.min(100,
+  Math.max(0, (value - min) / (max - min) * 100)
+);
 
-  // Couleur selon le niveau
-  let color;
-  if (pct > 10)       color = '#D99A45'; // orange → plein
-  else                color = '#ff6b35'; // rouge  → vide
+const silo = document.getElementById(fillId);
 
-  document.getElementById(fillId).style.background
-    = `linear-gradient(to top, ${color}, ${color}88)`;
+// hauteur
+silo.style.height = pct + '%';
 
+// seuil d'alarme
+if (pct < 10) {
+  silo.classList.add('low');
+} else {
+  silo.classList.remove('low');
+}
 }
 
   // ── Connexion MQTT ─────────────────────────────────────────
 
+  
   const client = mqtt.connect(BROKER, {
     clientId: 'dashboard_' + Math.random().toString(16).slice(2, 8),
     clean: true,
