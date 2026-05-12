@@ -883,8 +883,7 @@ function updateThermo(value, min, max) {
 
       if (topic === TOPIC2) {
         elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        const value = parseFloat(message.toString());
-        updateThermo(value, 0, 100); // min=0°C, max=100°C
+        updateThermo(elVal2.textContent, 0, 100); // min=0°C, max=100°C
       }
 
       if (topic === TOPIC3) {
