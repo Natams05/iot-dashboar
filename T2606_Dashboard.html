@@ -660,6 +660,7 @@
        <div class="card">
         <div class="card-tag">Niveau stock</div>
         <div class="card-label">T2606/Siemens/NivStockSt1</div>
+        <div class="card-content">
         <div>
           <span class="card-value" id="val5">--</span>
           <span class="card-unit" id="unit5"></span>
@@ -673,6 +674,7 @@
           <div class="silo-tube">
             <div class="silo-fill" id="silo-fill"></div>
           </div>
+        </div>
         </div>
        </div>
        </div>
@@ -915,7 +917,7 @@ function updateThermo(tubeId, bulbId, value, min, max) {
 
 // ── Barre Graphe ───────────────────────────────────────
 
-function updateSilo(fillId, valueId, value, min, max) {
+function updateSilo(fillId, value, min, max) {
   const pct = Math.min(100, Math.max(0, (value - min) / (max - min) * 100));
 
   // Hauteur de la barre
@@ -929,8 +931,6 @@ function updateSilo(fillId, valueId, value, min, max) {
   document.getElementById(fillId).style.background
     = `linear-gradient(to top, ${color}, ${color}88)`;
 
-  // Valeur
-  document.getElementById(valueId).textContent = pct.toFixed(0) + '%';
 }
 
   // ── Connexion MQTT ─────────────────────────────────────────
@@ -997,7 +997,7 @@ function updateSilo(fillId, valueId, value, min, max) {
       }
 
       if (topic === TOPIC5) {
-        elVal5.textContent = parseFloat(message.toString());
+        elVal5.textContent = isNaN(value) ? message.toString() : parseInt(value);
         updateSilo('silo-fill', value, 0, 100);
       }
 
