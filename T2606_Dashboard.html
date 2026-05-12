@@ -661,8 +661,8 @@
         <div class="card-tag">Niveau stock</div>
         <div class="card-label">T2606/Siemens/NivStockSt1</div>
         <div>
-          <span class="card-value" id="val1">--</span>
-          <span class="card-unit" id="unit1"></span>
+          <span class="card-value" id="val5">--</span>
+          <span class="card-unit" id="unit5"></span>
           </div>
         <div class="silo-container">
           <div class="silo-labels">
@@ -695,7 +695,7 @@
         <div class="card-label">T2606/Siemens/TempGrain</div>
         <div class="card-content">
           <div>
-            <span class="card-value" id="val5"></span>
+            <span class="card-value" id="val2"></span>
             <span class="card-unit" id="unit2"></span>
           </div>
           <!-- Themomètre température -->
@@ -989,7 +989,7 @@ function updateSilo(fillId, valueId, value, min, max) {
 
       if (topic === TOPIC3) {
         elVal3.textContent = parseFloat(message.toString());
-        updateGauge(elVal3.textContent, -1, 0); // min=-2, max=0 bar
+        updateGauge(value, -1, 0); // min=-2, max=0 bar
       }
 
       if (topic === TOPIC4) {
@@ -998,8 +998,7 @@ function updateSilo(fillId, valueId, value, min, max) {
 
       if (topic === TOPIC5) {
         elVal5.textContent = parseFloat(message.toString());
-        const value = parseFloat(message.toString());
-        updateSilo('silo-fill', 'silo-value', value, 0, 100);
+        updateSilo('silo-fill', value, 0, 100);
       }
 
       elUpdate.textContent = now;
