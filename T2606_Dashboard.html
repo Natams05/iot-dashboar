@@ -542,9 +542,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      height: 150px;
+      height: 200px;
       position: relative;
+      margin: auto;
     }
+   
 
     .silo-labels {
       display: flex;
@@ -621,8 +623,7 @@
 
 <main>
 
-  <!-- Valeurs temps réel -->
-   <!-- Var 1 -->
+  <!-- Station 1 -->
    <div>
     <div class="section-label">Station 1</div>
     <div class="Space-state">
@@ -633,13 +634,14 @@
     </div>
 
     <div class="cards">
+        <!-- Température torréfacteur -->
       <div class="card">
         <div class="card-tag">Température torréfacteur</div>
         <div class="card-label">T2606/Siemens/TempTorefacteur</div>
         <div>
           <span class="card-value" id="val1">--</span>
           <span class="card-unit" id="unit1"></span>
-           <!-- Historique graphique -->
+           <!-- Graphique Température -->
       <div class="chart-container" style="margin-top:20px">
         <div class="chart-header">
           <div class="chart-title">Graphe température</div>
@@ -652,12 +654,16 @@
         </div>
         <canvas id="chart"></canvas>
       </div>
-
+          <!-- Niveau silo -->
         </div>
        </div>
        <div class="card">
         <div class="card-tag">Niveau stock</div>
         <div class="card-label">T2606/Siemens/NivStockSt1</div>
+        <div>
+          <span class="card-value" id="val1">--</span>
+          <span class="card-unit" id="unit1"></span>
+          </div>
         <div class="silo-container">
           <div class="silo-labels">
             <span class="silo-label-max">100%</span>
@@ -667,12 +673,12 @@
           <div class="silo-tube">
             <div class="silo-fill" id="silo-fill"></div>
           </div>
-          <div class="silo-value" id="silo-value">--%</div>
         </div>
        </div>
+       </div>
       </div>    
-    </div>
 
+      <!-- Station 2 -->
   <div>
     <div class="section-label">Station 2</div>
     <div class="Space-state">
@@ -683,15 +689,16 @@
     </div>
     <div class="cards">
 
-      <!-- Var 2 -->
+      <!-- Température grain -->
       <div class="card">
         <div class="card-tag">Température grain</div>
         <div class="card-label">T2606/Siemens/TempGrain</div>
         <div class="card-content">
           <div>
-            <span class="card-value" id="val2">--</span>
+            <span class="card-value" id="val5"></span>
             <span class="card-unit" id="unit2"></span>
           </div>
+          <!-- Themomètre température -->
           <div class="thermometer">
             <div class="thermo-tube">
               <div class="thermo-fill" id="thermo-fill-1"></div>
@@ -706,7 +713,7 @@
           </div>
         </div>
       </div>
-      <!-- Var 3 -->
+      <!-- Niveau de vide -->
       <div class="card">
         <div class="card-tag">Niveau de vide</div>
         <div class="card-label">T2606/Siemens/NiveauVide</div>
@@ -714,6 +721,7 @@
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
         </div>
+        <!-- Manomètre niveau de vide -->
         <div class="gauge-container">
           <div class="gauge-bg"></div>
           <div class="gauge-fill"></div>
@@ -751,9 +759,11 @@
   const elVal1      = document.getElementById('val1');
   const elVal2      = document.getElementById('val2');
   const elVal3      = document.getElementById('val3');
+  const elVal5      = document.getElementById('val5');
   const elunit1     = document.getElementById('unit1');
   const elunit2     = document.getElementById('unit2');
   const elunit3     = document.getElementById('unit3');
+  const elunit5     = document.getElementById('unit5');
   const elDot       = document.getElementById('status-dot');
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
@@ -767,6 +777,7 @@
    elunit1.textContent = '°C';
    elunit2.textContent = '°C';
    elunit3.textContent = 'bar';
+   elunit5.textContent = '%'
 
    // ── Graphique canvas ───────────────────────────────────────
    const canvas = document.getElementById('chart');
@@ -912,8 +923,7 @@ function updateSilo(fillId, valueId, value, min, max) {
 
   // Couleur selon le niveau
   let color;
-  if (pct > 66)       color = '#39ff14'; // vert  → plein
-  else if (pct > 33)  color = '#D99A45'; // orange → moyen
+  if (pct > 10)       color = '#D99A45'; // orange → plein
   else                color = '#ff6b35'; // rouge  → vide
 
   document.getElementById(fillId).style.background
@@ -987,6 +997,7 @@ function updateSilo(fillId, valueId, value, min, max) {
       }
 
       if (topic === TOPIC5) {
+        elVal5.textContent = parseFloat(message.toString());
         const value = parseFloat(message.toString());
         updateSilo('silo-fill', 'silo-value', value, 0, 100);
       }
