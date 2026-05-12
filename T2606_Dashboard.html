@@ -460,6 +460,7 @@
       color: #7d9ebd;
     }
 
+      /* ── Thermomètre ── */
     .thermometer {
       display: flex;
       flex-direction: column;
@@ -487,7 +488,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 0%;                /* ← mis à jour par JS */
+      height: 0%;                
       background: linear-gradient(to top, #ff6b35, #D99A45);
       transition: height 0.5s ease;
     }
@@ -536,6 +537,54 @@
     }
 
 
+    /* ── Barre Graphe ── */
+    .silo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 150px;
+      position: relative;
+    }
+
+    .silo-labels {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: #7d9ebd;
+      text-align: right;
+    }
+
+    .silo-tube {
+      width: 40px;
+      height: 100%;
+      background: #1e2d3d;
+      border-radius: 4px 4px 0 0;
+      border: 2px solid #4a6278;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .silo-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0%;                /* ← mis à jour par JS */
+      background: linear-gradient(to top, #D99A45, #D99A4588);
+      transition: height 0.5s ease;
+      border-radius: 2px;
+    }
+
+    .silo-value {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 16px;
+      color: #c8d6e5;
+      writing-mode: vertical-rl;  /* texte vertical */
+      text-orientation: mixed;
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -582,6 +631,7 @@
         <span class="State-value" id="etat1">--</span>
       </div>
     </div>
+
     <div class="cards">
       <div class="card">
         <div class="card-tag">Température torréfacteur</div>
@@ -602,9 +652,24 @@
         </div>
         <canvas id="chart"></canvas>
       </div>
-      
-    </div>
+
         </div>
+       </div>
+       <div class="card">
+        <div class="card-tag">Niveau stock</div>
+        <div class="card-label">T2606/Siemens/NivStockSt1</div>
+        <div class="silo-container">
+          <div class="silo-labels">
+            <span class="silo-label-max">100%</span>
+            <span class="silo-label-mid">50%</span>
+            <span class="silo-label-min">0%</span>
+          </div>
+          <div class="silo-tube">
+            <div class="silo-fill" id="silo-fill"></div>
+          </div>
+          <div class="silo-value" id="silo-value">--%</div>
+        </div>
+       </div>
       </div>    
     </div>
 
@@ -837,6 +902,26 @@ function updateThermo(tubeId, bulbId, value, min, max) {
 
 }
 
+// ── Barre Graphe ───────────────────────────────────────
+
+function updateSilo(fillId, valueId, value, min, max) {
+  const pct = Math.min(100, Math.max(0, (value - min) / (max - min) * 100));
+
+  // Hauteur de la barre
+  document.getElementById(fillId).style.height = pct + '%';
+
+  // Couleur selon le niveau
+  let color;
+  if (pct > 66)       color = '#39ff14'; // vert  → plein
+  else if (pct > 33)  color = '#D99A45'; // orange → moyen
+  else                color = '#ff6b35'; // rouge  → vide
+
+  document.getElementById(fillId).style.background
+    = `linear-gradient(to top, ${color}, ${color}88)`;
+
+  // Valeur
+  document.getElementById(valueId).textContent = pct.toFixed(0) + '%';
+}
 
   // ── Connexion MQTT ─────────────────────────────────────────
 
@@ -901,7 +986,10 @@ function updateThermo(tubeId, bulbId, value, min, max) {
         if(eletat1) eletat1.textContent =  message.toString();
       }
 
-      
+      if (topic === TOPIC5) {
+        const value = parseFloat(message.toString());
+        updateSilo('silo-fill', 'silo-value', value, 0, 100);
+      }
 
       elUpdate.textContent = now;
     } catch (e) {
