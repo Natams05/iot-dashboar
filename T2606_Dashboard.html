@@ -610,12 +610,18 @@
 
   <div>
     <div class="section-label">Station 2</div>
+    <div class="Space-state">
+      <div class="card-tag">État machine</div>
+      <div>
+        <span class="State-value" id="etat2">--</span>
+      </div>
+    </div>
     <div class="cards">
 
       <!-- Var 2 -->
       <div class="card">
         <div class="card-tag">Température grain</div>
-        <div class="card-label">T2606/Test/Var2</div>
+        <div class="card-label">T2606/Siemens/TempGrain</div>
         <div class="card-content">
           <div>
             <span class="card-value" id="val2">--</span>
@@ -623,23 +629,22 @@
           </div>
           <div class="thermometer">
             <div class="thermo-tube">
-              <div class="thermo-fill" id="thermo-fill"></div>
+              <div class="thermo-fill" id="thermo-fill-1"></div>
               <div class="thermo-labels">
                 <span class="thermo-max">100°</span>
                 <span class="thermo-min">0°</span>
               </div>
             </div>
             <div class="thermo-bulb">
-              <div class="thermo-bulb-fill" id="thermo-bulb-fill"></div>
+              <div class="thermo-bulb-fill" id="thermo-bulb-fill-1"></div>
             </div>
-            <div class="thermo-value" id="thermo-value">--°C</div>
           </div>
         </div>
       </div>
       <!-- Var 3 -->
       <div class="card">
         <div class="card-tag">Niveau de vide</div>
-        <div class="card-label">T2606/Test/Var3</div>
+        <div class="card-label">T2606/Siemens/NiveauVide</div>
         <div>
           <span class="card-value" id="val3">--</span>
           <span class="card-unit" id="unit3"></span>
@@ -688,6 +693,10 @@
   const elStatus    = document.getElementById('status-text');
   const elUpdate    = document.getElementById('last-update');
   const eletat1     = document.getElementById('etat1');
+  const eletat2     = document.getElementById('etat2');
+  const eletat3     = document.getElementById('etat3');
+  const eletat4     = document.getElementById('etat4');
+  
 
    // ── Unités ───────────────────────────────────────
    elunit1.textContent = '°C';
@@ -808,27 +817,24 @@ function updateGauge(value, min, max) {
 
 // ── Thermomètre ───────────────────────────────────────
 
-function updateThermo(value, min, max) {
+function updateThermo(tubeId, bulbId, valueId, value, min, max) {
   const pct = Math.min(100, Math.max(0, (value - min) / (max - min) * 100));
 
   // Hauteur du tube
-  document.getElementById('thermo-fill').style.height = pct + '%';
+  document.getElementById(tubeId).style.height = pct + '%';
 
-  // Couleur change selon température
-  // Froid = bleu, chaud = orange/rouge
-  const cold  = [0, 150, 255];   // bleu
-  const hot   = [255, 107, 53];  // orange
+  // Couleur
+  const cold  = [0, 150, 255];
+  const hot   = [255, 107, 53];
   const r = Math.round(cold[0] + pct/100 * (hot[0] - cold[0]));
   const g = Math.round(cold[1] + pct/100 * (hot[1] - cold[1]));
   const b = Math.round(cold[2] + pct/100 * (hot[2] - cold[2]));
   const color = `rgb(${r},${g},${b})`;
 
-  document.getElementById('thermo-fill').style.background
+  document.getElementById(tubeId).style.background
     = `linear-gradient(to top, ${color}, #D99A45)`;
-  document.getElementById('thermo-bulb-fill').style.background = color;
+  document.getElementById(bulbId).style.background = color;
 
-  // Valeur
-  document.getElementById('thermo-value').textContent = value.toFixed(1) + '°C';
 }
 
 
@@ -883,12 +889,12 @@ function updateThermo(value, min, max) {
 
       if (topic === TOPIC2) {
         elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        updateThermo(elVal2.textContent, 0, 100); // min=0°C, max=100°C
+        updateThermo('thermo-fill-1', 'thermo-bulb-fill-1',elVal2.textContent, 0, 100); // min=0°C, max=100°C
       }
 
       if (topic === TOPIC3) {
         elVal3.textContent = parseFloat(message.toString());
-        updateGauge(elVal3.textContent, -1, 0); // min=-5, max=5 bar
+        updateGauge(elVal3.textContent, -1, 0); // min=-2, max=0 bar
       }
 
       if (topic === TOPIC4) {
