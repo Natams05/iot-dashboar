@@ -639,8 +639,8 @@
         <div class="card-tag">Température torréfacteur</div>
         <div class="card-label">T2606/Siemens/TempTorefacteur</div>
         <div>
-          <span class="card-value" id="val1">--</span>
-          <span class="card-unit" id="unit1"></span>
+          <span class="card-value" id="TempTorre">--</span>
+          <span class="card-unit" id="unit11"></span>
            <!-- Graphique Température -->
       <div class="chart-container" style="margin-top:20px">
         <div class="chart-header">
@@ -652,7 +652,7 @@
             </div>
           </div>
         </div>
-        <canvas id="chart"></canvas>
+        <canvas id="chart1"></canvas>
       </div>
           <!-- Niveau silo -->
         </div>
@@ -662,8 +662,8 @@
         <div class="card-label">T2606/Siemens/NivStockSt1</div>
         <div class="card-content">
         <div>
-          <span class="card-value" id="val5">--</span>
-          <span class="card-unit" id="unit5"></span>
+          <span class="card-value" id="NiveStock1">--</span>
+          <span class="card-unit" id="unit12"></span>
           </div>
         <div class="silo-container">
           <div class="silo-labels">
@@ -672,7 +672,7 @@
             <span class="silo-label-min">0%</span>
           </div>
           <div class="silo-tube">
-            <div class="silo-fill" id="silo-fill"></div>
+            <div class="silo-fill" id="silo-fill-1"></div>
           </div>
         </div>
         </div>
@@ -694,11 +694,11 @@
       <!-- Température grain -->
       <div class="card">
         <div class="card-tag">Température grain</div>
-        <div class="card-label">T2606/Siemens/TempGrain</div>
+        <div class="card-label">T2606/Siemens/St2/TempGrain</div>
         <div class="card-content">
           <div>
-            <span class="card-value" id="val2"></span>
-            <span class="card-unit" id="unit2"></span>
+            <span class="card-value" id="TempGrain"></span>
+            <span class="card-unit" id="unit21"></span>
           </div>
           <!-- Themomètre température -->
           <div class="thermometer">
@@ -718,10 +718,10 @@
       <!-- Niveau de vide -->
       <div class="card">
         <div class="card-tag">Niveau de vide</div>
-        <div class="card-label">T2606/Siemens/NiveauVide</div>
+        <div class="card-label">T2606/Siemens/St2/NiveauVide</div>
         <div>
-          <span class="card-value" id="val3">--</span>
-          <span class="card-unit" id="unit3"></span>
+          <span class="card-value" id="NivVide">--</span>
+          <span class="card-unit" id="unit22"></span>
         </div>
         <!-- Manomètre niveau de vide -->
         <div class="gauge-container">
@@ -735,6 +735,106 @@
         </div>
       </div>
     </div>
+
+    <!-- Station 3 -->
+   <div>
+    <div class="section-label">Station 3</div>
+    <div class="Space-state">
+      <div class="card-tag">État machine</div>
+      <div>
+        <span class="State-value" id="etat3">--</span>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-tag">Ecart des meule</div>
+        <div class="card-label">T2606/Siemens/St3/EcartMeule</div>
+        <div>
+          <span class="card-value" id="EcartMeule">--</span>
+          <span class="card-unit" id="unit32"></span>
+        </div>
+       </div>
+       <!-- Niveau silo -->
+       <div class="card">
+        <div class="card-tag">Niveau stock</div>
+        <div class="card-label">T2606/Siemens/St3/NivStockSt3</div>
+        <div class="card-content">
+        <div>
+          <span class="card-value" id="NiveStock3">--</span>
+          <span class="card-unit" id="unit31"></span>
+          </div>
+        <div class="silo-container">
+          <div class="silo-labels">
+            <span class="silo-label-max">100%</span>
+            <span class="silo-label-mid">50%</span>
+            <span class="silo-label-min">0%</span>
+          </div>
+          <div class="silo-tube">
+            <div class="silo-fill" id="silo-fill-2"></div>
+          </div>
+        </div>
+        </div>
+       </div>
+       </div>
+      </div>  
+    
+    <!-- Station 4 -->
+   <div>
+    <div class="section-label">Station 4</div>
+    <div class="Space-state">
+      <div class="card-tag">État machine</div>
+      <div>
+        <span class="State-value" id="etat4">--</span>
+      </div>
+    </div>
+
+    <div class="cards">
+        <!-- Température thermobloc -->
+      <div class="card">
+        <div class="card-tag">Température thermobloc</div>
+        <div class="card-label">T2606/Siemens/St4/TemBbloc</div>
+        <div>
+          <span class="card-value" id="Tempbloc">--</span>
+          <span class="card-unit" id="unit41"></span>
+           <!-- Graphique Température -->
+      <div class="chart-container" style="margin-top:20px">
+        <div class="chart-header">
+          <div class="chart-title">Graphe température</div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#D99A45"></div>
+              Température
+            </div>
+          </div>
+        </div>
+        <canvas id="chart2"></canvas>
+      </div>
+          <!-- Niveau réservoir -->
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-tag">Niveau réservoir</div>
+        <div class="card-label">T2606/Siemens/St4/NivEau</div>
+        <div class="card-content">
+        <div>
+          <span class="card-value" id="NiveEau">--</span>
+          <span class="card-unit" id="unit42"></span>
+          </div>
+        <div class="silo-container">
+          <div class="silo-labels">
+            <span class="silo-label-max">100%</span>
+            <span class="silo-label-mid">50%</span>
+            <span class="silo-label-min">0%</span>
+          </div>
+          <div class="silo-tube">
+            <div class="silo-fill" id="silo-fill-3"></div>
+          </div>
+        </div>
+        </div>
+       </div>
+       </div>
+      </div>  
   </div>
 </main>
 
@@ -747,43 +847,93 @@
 <script>
   // ── Configuration ──────────────────────────────────────────
   const BROKER  = 'wss://broker.hivemq.com:8884/mqtt';
-  const TOPIC1  = 'T2606/Test/Var1';
-  const TOPIC2  = 'T2606/Test/Var2';
-  const TOPIC3  = 'T2606/Test/Var3';
-  const TOPIC4  = 'T2606/Test/Var4';
-  const TOPIC5  = 'T2606/Test/Var5';
+    // ── Station 1 ──────────────────────────────────────────
+  const TOPIC10  = 'T2606/Siemens/St1/EtatMachine1';
+  const TOPIC11  = 'T2606/Siemens/St1/TempTorre';
+  const TOPIC12  = 'T2606/Siemens/St1/NivStock1';
+    // ── Station 2 ──────────────────────────────────────────
+  const TOPIC20  = 'T2606/Siemens/St2/EtatMachine2';
+  const TOPIC21  = 'T2606/Siemens/St2/TempGrain';
+  const TOPIC22  = 'T2606/Siemens/St2/NivVide';
+    // ── Station 3 ──────────────────────────────────────────
+  const TOPIC30  = 'T2606/Siemens/St3/EtatMachine3';
+  const TOPIC31  = 'T2606/Siemens/St3/NivStock3';
+  const TOPIC32  = 'T2606/Siemens/St3/EcartMeule';
+    // ── Station 4 ──────────────────────────────────────────
+  const TOPIC40  = 'T2606/Siemens/St4/EtatMachine4';
+  const TOPIC41  = 'T2606/Siemens/St4/TempBloc';
+  const TOPIC42  = 'T2606/Siemens/St4/NivEau';
+
   const MAX_PTS = 30;
  
   // ── État ───────────────────────────────────────────────────
-  const history = { val1: []};
+  const history = {
+  TempTorre: [],
+  TempBloc: []
+};
 
   // ── Éléments DOM ───────────────────────────────────────────
-  const elVal1      = document.getElementById('val1');
-  const elVal2      = document.getElementById('val2');
-  const elVal3      = document.getElementById('val3');
-  const elVal5      = document.getElementById('val5');
-  const elunit1     = document.getElementById('unit1');
-  const elunit2     = document.getElementById('unit2');
-  const elunit3     = document.getElementById('unit3');
-  const elunit5     = document.getElementById('unit5');
-  const elDot       = document.getElementById('status-dot');
-  const elStatus    = document.getElementById('status-text');
-  const elUpdate    = document.getElementById('last-update');
-  const eletat1     = document.getElementById('etat1');
-  const eletat2     = document.getElementById('etat2');
-  const eletat3     = document.getElementById('etat3');
-  const eletat4     = document.getElementById('etat4');
+    // ── Station 1 ──────────────────────────────────────────
+  const elval11        = document.getElementById('TempTorre');
+  const elunit11       = document.getElementById('unit11');
+  const elval12        = document.getElementById('NiveStock1');
+  const elunit12       = document.getElementById('unit12');
+
+  const eletat1        = document.getElementById('etat1');
+
+    // ── Station 2 ──────────────────────────────────────────
+  const elval21        = document.getElementById('TempGrain');
+  const elunit21       = document.getElementById('unit21');
+  const elval22        = document.getElementById('NivVide');
+  const elunit22       = document.getElementById('unit22');
+
+  const eletat2        = document.getElementById('etat2');
+
+    // ── Station 3 ──────────────────────────────────────────
+  const elval31        = document.getElementById('NivStock3');
+  const elunit31       = document.getElementById('unit31');
+  const elval32        = document.getElementById('EcartMeule');
+  const elunit32       = document.getElementById('unit32');
+
+  const eletat3        = document.getElementById('etat3');
+
+    // ── Station 4 ──────────────────────────────────────────
+  const elval41        = document.getElementById('TempBloc');
+  const elunit41       = document.getElementById('unit41');
+  const elval42        = document.getElementById('NivEau');
+  const elunit42       = document.getElementById('unit42');
+
+  const eletat4        = document.getElementById('etat4');
+  
+    // ── Autre ──────────────────────────────────────────
+  const elDot          = document.getElementById('status-dot');
+  const elStatus       = document.getElementById('status-text');
+  const elUpdate       = document.getElementById('last-update');
+ 
   
 
    // ── Unités ───────────────────────────────────────
-   elunit1.textContent = '°C';
-   elunit2.textContent = '°C';
-   elunit3.textContent = 'bar';
-   elunit5.textContent = '%'
+
+   elunit11.textContent = '°C';
+   elunit12.textContent = '%';
+
+   elunit21.textContent = '°C';
+   elunit22.textContent = 'bar';
+
+   elunit31.textContent = 'g';
+   elunit32.textContent = 'mm';
+
+   elunit41.textContent = '°C';
+   elunit42.textContent = 'ml';
 
    // ── Graphique canvas ───────────────────────────────────────
-   const canvas = document.getElementById('chart');
-   const ctx    = canvas.getContext('2d');
+
+   const chart1 = initChart('chart1');
+   const chart2 = initChart('chart2');
+
+   function initChart(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const ctx    = canvas.getContext('2d');
 
   function resizeCanvas() {
     canvas.width  = canvas.offsetWidth;
@@ -792,57 +942,47 @@
   resizeCanvas();
   window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
 
-  function drawChart() {
+  function drawChart(data, minV, maxV) {
     const w = canvas.width, h = canvas.height;
-    const PADDING_LEFT = 55; // espace pour les labels à gauche
+    const PADDING_LEFT = 55;
     const PADDING_TOP  = 10;
     const PADDING_BOT  = 10;
-    ctx.clearRect(0, 0, w, h);
-
-    if (history.val1.length < 2) return;
-
-    const data  = history.val1;
     const color = '#D99A45';
-    const minV  = 0;
-    const maxV  = 100;
     const range = maxV - minV || 1;
 
-    
-    // Fonction de conversion valeur → pixel Y
-    const toY = v => h - PADDING_BOT - ((v - minV) / range) * (h - PADDING_TOP - PADDING_BOT);
+    ctx.clearRect(0, 0, w, h);
+    if (data.length < 2) return;
 
-    // Calcul des points
+    const toY = v => h - PADDING_BOT - ((v - minV) / range) * (h - PADDING_TOP - PADDING_BOT);
     const pts = data.map((v, i) => ({
       x: PADDING_LEFT + (i / (data.length - 1)) * (w - PADDING_LEFT),
       y: toY(v)
     }));
 
     // ── Ligne MIN pointillée ──
-    const yMin = toY(minV);
     ctx.beginPath();
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = '#4a6278';
     ctx.lineWidth = 1;
-    ctx.moveTo(PADDING_LEFT, yMin);
-    ctx.lineTo(w, yMin);
+    ctx.moveTo(PADDING_LEFT, toY(minV));
+    ctx.lineTo(w, toY(minV));
     ctx.stroke();
 
     // ── Ligne MAX pointillée ──
-    const yMax = toY(maxV);
     ctx.beginPath();
-    ctx.moveTo(PADDING_LEFT, yMax);
-    ctx.lineTo(w, yMax);
+    ctx.moveTo(PADDING_LEFT, toY(maxV));
+    ctx.lineTo(w, toY(maxV));
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // ── Labels MIN/MAX sur le côté gauche ──
+    // ── Labels MIN/MAX ──
     ctx.font = '11px Share Tech Mono, monospace';
     ctx.fillStyle = '#c8d6e5';
     ctx.textAlign = 'right';
-    ctx.fillText(`${maxV.toFixed(1)}°`, PADDING_LEFT - 4, yMax + 4);
-    ctx.fillText(`${minV.toFixed(1)}°`, PADDING_LEFT - 4, yMin + 4);
+    ctx.fillText(`${maxV.toFixed(1)}°`, PADDING_LEFT - 4, toY(maxV) + 4);
+    ctx.fillText(`${minV.toFixed(1)}°`, PADDING_LEFT - 4, toY(minV) + 4);
 
-    // ── Zone remplie sous la courbe ──
+    // ── Zone remplie ──
     ctx.beginPath();
     ctx.moveTo(pts[0].x, h - PADDING_BOT);
     pts.forEach(p => ctx.lineTo(p.x, p.y));
@@ -868,11 +1008,14 @@
     ctx.fillStyle = color;
     ctx.fill();
 
-    // ── Valeur actuelle à côté du point final ──
+    // ── Valeur actuelle ──
     ctx.font = '11px Share Tech Mono, monospace';
     ctx.fillStyle = color;
     ctx.textAlign = 'left';
     ctx.fillText(`${data[data.length-1].toFixed(1)}°`, last.x + 8, last.y + 4);
+  }
+
+  return { drawChart };
 }
 
 
@@ -944,15 +1087,29 @@ function updateSilo(fillId, value, min, max) {
   client.on('connect', () => {
     elDot.className    = 'status-dot connected';
     elStatus.textContent = 'CONNECTED';
-    client.subscribe(TOPIC1, err => {
+    client.subscribe(TOPIC10, err => {
     });
-    client.subscribe(TOPIC2, err => {
+    client.subscribe(TOPIC11, err => {
     });
-    client.subscribe(TOPIC3, err => {
+    client.subscribe(TOPIC12, err => {
     });
-    client.subscribe(TOPIC4, err =>{
+    client.subscribe(TOPIC20, err =>{
     });
-    client.subscribe(TOPIC5, err =>{
+    client.subscribe(TOPIC21, err =>{
+    });
+    client.subscribe(TOPIC22, err =>{
+    });
+    client.subscribe(TOPIC30, err =>{
+    });
+    client.subscribe(TOPIC31, err =>{
+    });
+    client.subscribe(TOPIC32, err =>{
+    });
+    client.subscribe(TOPIC40, err =>{
+    });
+    client.subscribe(TOPIC41, err =>{
+    });
+    client.subscribe(TOPIC42, err =>{
     });
   });
 
@@ -975,30 +1132,58 @@ function updateSilo(fillId, value, min, max) {
       const value = parseFloat(message.toString());
       const now   = new Date().toLocaleTimeString('fr-CH');
 
-      if (topic === TOPIC1) {
-        elVal1.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
-        history.val1.push(isNaN(value) ? 0 : value);
-        if (history.val1.length > MAX_PTS) history.val1.shift();
-        drawChart();
-      }
-
-      if (topic === TOPIC2) {
-        elVal2.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        updateThermo('thermo-fill-1', 'thermo-bulb-fill-1',value, 0, 100); // min=0°C, max=100°C
-      }
-
-      if (topic === TOPIC3) {
-        elVal3.textContent = parseFloat(message.toString());
-        updateGauge(value, -1, 0); // min=-2, max=0 bar
-      }
-
-      if (topic === TOPIC4) {
+      if (topic === TOPIC10) {
         if(eletat1) eletat1.textContent =  message.toString();
       }
 
-      if (topic === TOPIC5) {
-        elVal5.textContent = isNaN(value) ? message.toString() : parseInt(value);
-        updateSilo('silo-fill', value, 0, 100);
+      if (topic === TOPIC11) {
+        elval11.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
+        history.TempTorre.push(value);
+        if (history.TempTorre.length > MAX_PTS) history.TempTorre.shift();
+        chart1.drawChart(history.TempTorre, 0, 250);
+      }
+
+      if (topic === TOPIC12) {
+        elval12.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        updateSilo('silo-fill-1', value, 0, 100);
+      }
+
+      if (topic === TOPIC20) {
+        if(eletat2) eletat2.textContent =  message.toString();
+      }
+
+      if (topic === TOPIC21) {
+        elval21.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        updateThermo('thermo-fill-1', 'thermo-bulb-fill-1',value, 0, 100); // min=0°C, max=100°C
+      }
+
+      if (topic === TOPIC22) {
+        elval22.textContent = parseFloat(message.toString());
+        updateGauge(value, -1, 0); // min=-2, max=0 bar
+      }
+
+      if (topic === TOPIC30) {
+        if(eletat3) eletat3.textContent =  message.toString();
+      }
+
+      if (topic === TOPIC31) {
+        elval31.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        updateSilo('silo-fill-2', value, 0, 650);
+      }
+      
+      if (topic === TOPIC40) {
+        if(eletat4) eletat4.textContent =  message.toString();
+      }
+
+      if (topic === TOPIC41) {
+        elval41.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
+        history.TempBloc.push(value);
+        if (history.TempBloc.length > MAX_PTS) history.TempBloc.shift();
+        chart2.drawChart(history.TempBloc, 0, 150);
+      }
+      if (topic === TOPIC42) {
+        elval42.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        updateSilo('silo-fill-3', value, 0, 3000);
       }
 
       elUpdate.textContent = now;
