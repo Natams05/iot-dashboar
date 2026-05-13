@@ -1172,7 +1172,7 @@ if (pct < 10) {
       }
 
       if (topic === TOPIC22) {
-        elval22.textContent = parseFloat(message.toString());
+        elval22.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
         updateGauge(value, -1, 0); // min=-2, max=0 bar
       }
 
