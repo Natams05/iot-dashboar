@@ -1136,7 +1136,7 @@ function setConnected(dotId, textId, connected) {
   if (connected) {
     dot.className  = 'status-dot connected'; // vert + animation pulse
     text.textContent = 'CONNECTÉ';
-    text.style.color = 'var(--green)';
+    text.style.color = 'var(--muted)';
   } else {
     dot.className  = 'status-dot';           // gris
     text.textContent = 'DÉCONNECTÉ';
@@ -1163,7 +1163,7 @@ function resetTimer(timer, dotId, textId) {
     // connexion au topics
   client.on('connect', () => {
     elDot.className    = 'status-dot connected';
-    elStatus.textContent = 'CONNECTED';
+    elStatus.textContent = 'CONNECTÉ';
     client.subscribe(TOPIC10, err => {
     });
     client.subscribe(TOPIC11, err => {
@@ -1192,16 +1192,16 @@ function resetTimer(timer, dotId, textId) {
 
   client.on('error', err => {
     elDot.className    = 'status-dot error';
-    elStatus.textContent = 'ERROR';
+    elStatus.textContent = 'ERREUR';
   });
 
   client.on('offline', () => {
     elDot.className    = 'status-dot';
-    elStatus.textContent = 'DISCONNECTED';
+    elStatus.textContent = 'DÉCONNECTÉ';
   });
 
   client.on('reconnect', () => {
-    elStatus.textContent = 'RECONNECTING...';
+    elStatus.textContent = 'RECONNECTION...';
   });
 
     // Lecture des message
