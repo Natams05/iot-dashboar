@@ -1155,7 +1155,7 @@ function resetTimer(timer, dotId, textId) {
   // ── Connexion MQTT ─────────────────────────────────────────
 
   
-  const client = mqtt.connect(BROKER, {
+   const client = mqtt.connect(BROKER, {
     clientId: 'dashboard_' + Math.random().toString(16).slice(2, 8),
     clean: true,
     reconnectPeriod: 3000,
@@ -1163,8 +1163,7 @@ function resetTimer(timer, dotId, textId) {
     // connexion au topics
   client.on('connect', () => {
     elDot.className    = 'status-dot connected';
-    elStatus.textContent = 'CONNECTÉ';
-    text.style.color = 'var(--green)';
+    elStatus.textContent = 'CONNECTED';
     client.subscribe(TOPIC10, err => {
     });
     client.subscribe(TOPIC11, err => {
@@ -1193,19 +1192,16 @@ function resetTimer(timer, dotId, textId) {
 
   client.on('error', err => {
     elDot.className    = 'status-dot error';
-    elStatus.textContent = 'ERREUR';
-    text.style.color = 'var(--accent2)';
+    elStatus.textContent = 'ERROR';
   });
 
   client.on('offline', () => {
     elDot.className    = 'status-dot';
-    elStatus.textContent = 'DECONNECTÉ';
-    text.style.color = 'var(--muted)';
+    elStatus.textContent = 'DISCONNECTED';
   });
 
   client.on('reconnect', () => {
-    elStatus.textContent = 'RECONNECTION...';
-    text.style.color = 'var(--muted)';
+    elStatus.textContent = 'RECONNECTING...';
   });
 
     // Lecture des message
