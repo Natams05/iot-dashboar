@@ -857,7 +857,7 @@
  
 
 <footer>
-  <span>broker.hivemq.com:8884 · V3.1</span>
+  <span>broker.hivemq.com:8884 · V4.0</span>
 </footer>
 
 <script>
@@ -1097,7 +1097,7 @@ if (pct < 10) {
     clean: true,
     reconnectPeriod: 3000,
   });
-
+    // connexion au topics
   client.on('connect', () => {
     elDot.className    = 'status-dot connected';
     elStatus.textContent = 'CONNECTED';
@@ -1141,63 +1141,78 @@ if (pct < 10) {
     elStatus.textContent = 'RECONNECTING...';
   });
 
+    // Lecture des message
   client.on('message', (topic, message) => {
     try {
       const value = parseFloat(message.toString());
       const now   = new Date().toLocaleTimeString('fr-CH');
 
+          // Etat machine station 1
       if (topic === TOPIC10) {
         if(eletat1) eletat1.textContent =  message.toString();
       }
 
+          // Température du torrefacteur
       if (topic === TOPIC11) {
         elval11.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
         history.TempTorre.push(value);
         if (history.TempTorre.length > MAX_PTS) history.TempTorre.shift();
-        chart1.drawChart(history.TempTorre, 0, 250);
+        chart1.drawChart(history.TempTorre, 0, 300);
       }
 
+          // Niveau du stock de grain vert
       if (topic === TOPIC12) {
         elval12.textContent = isNaN(value) ? message.toString() : parseInt(value);
         updateSilo('silo-fill-1', value, 0, 100);
       }
 
+          // Etat machine station 2
       if (topic === TOPIC20) {
         if(eletat2) eletat2.textContent =  message.toString();
       }
 
+          // Température du grain
       if (topic === TOPIC21) {
         elval21.textContent = isNaN(value) ? message.toString() : parseInt(value);
         updateThermo('thermo-fill-1', 'thermo-bulb-fill-1',value, 0, 100); // min=0°C, max=100°C
       }
 
+          // Niveau de vide dans la chambre
       if (topic === TOPIC22) {
         elval22.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
         updateGauge(value, -1, 0); // min=-2, max=0 bar
       }
 
+          // Etat machine station 3
       if (topic === TOPIC30) {
         if(eletat3) eletat3.textContent =  message.toString();
       }
 
+          // Niveau du stock de grain terrefier
       if (topic === TOPIC31) {
         elval31.textContent = isNaN(value) ? message.toString() : parseInt(value);
         updateSilo('silo-fill-2', value, 0, 650);
       }
+
+          // Ecart des meules
       if (topic === TOPIC32) {
         elval32.textContent = isNaN(value) ? message.toString() : parseInt(value);
       }
-      
+
+          // Etat machine station 4
       if (topic === TOPIC40) {
         if(eletat4) eletat4.textContent =  message.toString();
       }
 
+          // Température du thermoblock
       if (topic === TOPIC41) {
         elval41.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
         history.TempBloc.push(value);
         if (history.TempBloc.length > MAX_PTS) history.TempBloc.shift();
         chart2.drawChart(history.TempBloc, 0, 150);
       }
+
+          // Niveau du reservoir d'eau
       if (topic === TOPIC42) {
         elval42.textContent = isNaN(value) ? message.toString() : parseInt(value);
         updateSilo('silo-fill-3', value, 0, 3000);
