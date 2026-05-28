@@ -183,7 +183,7 @@
 
     .section-label {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 22x;
       letter-spacing: 3px;
       color: var(--muted);
       text-transform: uppercase;
@@ -631,7 +631,7 @@
   <div class="status-bar">
     <div class="status-dot" id="status-dot"></div>
     <div class="status-info">
-    <span id="status-text">DISCONNECTED</span>
+    <span id="status-text">DISCONNECTÉ</span>
     <div class="timestamp" id="last-update">--:--</div>
     </div>
   </div>
@@ -1161,7 +1161,7 @@ function resetTimer(timer, dotId, textId) {
     // connexion au topics
   client.on('connect', () => {
     elDot.className    = 'status-dot connected';
-    elStatus.textContent = 'CONNECTED';
+    elStatus.textContent = 'CONNECTÉ';
     client.subscribe(TOPIC10, err => {
     });
     client.subscribe(TOPIC11, err => {
@@ -1188,17 +1188,17 @@ function resetTimer(timer, dotId, textId) {
     });
   });
 
-  client.on('error', err => {
+  client.on('erreur', err => {
     elDot.className    = 'status-dot error';
     elStatus.textContent = 'ERROR';
   });
 
-  client.on('offline', () => {
+  client.on('hors ligne', () => {
     elDot.className    = 'status-dot';
     elStatus.textContent = 'DISCONNECTED';
   });
 
-  client.on('reconnect', () => {
+  client.on('reconnection', () => {
     elStatus.textContent = 'RECONNECTING...';
   });
 
@@ -1236,7 +1236,7 @@ function resetTimer(timer, dotId, textId) {
 
           // Température du grain
       if (topic === TOPIC21) {
-        elval21.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        elval21.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
         updateThermo('thermo-fill-1', 'thermo-bulb-fill-1',value, 0, 100); // min=0°C, max=100°C
       }
 
@@ -1260,7 +1260,7 @@ function resetTimer(timer, dotId, textId) {
 
           // Ecart des meules
       if (topic === TOPIC32) {
-        elval32.textContent = isNaN(value) ? message.toString() : parseInt(value);
+        elval32.textContent = isNaN(value) ? message.toString() : value.toFixed(2);
       }
 
           // Etat machine station 4
