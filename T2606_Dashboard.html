@@ -643,11 +643,18 @@
    <div>
     <div class="section-label">Station 1</div>
     <div class="Space-state">
-      <div class="card-tag">État machine</div>
-      <div>
-        <span class="State-value" id="etat1">--</span>
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="card-tag">État machine</div>
+    <!-- Indicateur de connexion -->
+    <div class="status-bar">
+      <div class="status-dot" id="dot-station1"></div>
+      <div class="status-info">
+        <span id="status-station1">DÉCONNECTÉ</span>
       </div>
     </div>
+  </div>
+  <span class="State-value" id="etat1">--</span>
+</div>
 
     <div class="cards">
         <!-- Température torréfacteur -->
@@ -699,11 +706,19 @@
       <!-- Station 2 -->
   <div>
     <div class="section-label">Station 2</div>
-    <div class="Space-state">
-      <div class="card-tag">État machine</div>
-      <div>
-        <span class="State-value" id="etat2">--</span>
+  <div class="Space-state">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="card-tag">État machine</div>
+    <!-- Indicateur de connexion -->
+    <div class="status-bar">
+      <div class="status-dot" id="dot-station2"></div>
+      <div class="status-info">
+        <span id="status-station2">DÉCONNECTÉ</span>
       </div>
+    </div>
+  </div>
+  <span class="State-value" id="etat2">--</span>
+</div>
     </div>
     <div class="cards">
 
@@ -756,10 +771,18 @@
    <div>
     <div class="section-label">Station 3</div>
     <div class="Space-state">
-      <div class="card-tag">État machine</div>
-      <div>
-        <span class="State-value" id="etat3">--</span>
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="card-tag">État machine</div>
+    <!-- Indicateur de connexion -->
+    <div class="status-bar">
+      <div class="status-dot" id="dot-station3"></div>
+      <div class="status-info">
+        <span id="status-station3">DÉCONNECTÉ</span>
       </div>
+    </div>
+  </div>
+  <span class="State-value" id="etat3">--</span>
+</div>
     </div>
 
     <div class="cards">
@@ -799,10 +822,18 @@
    <div>
     <div class="section-label">Station 4</div>
     <div class="Space-state">
-      <div class="card-tag">État machine</div>
-      <div>
-        <span class="State-value" id="etat4">--</span>
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="card-tag">État machine</div>
+    <!-- Indicateur de connexion -->
+    <div class="status-bar">
+      <div class="status-dot" id="dot-station4"></div>
+      <div class="status-info">
+        <span id="status-station4">DÉCONNECTÉ</span>
       </div>
+    </div>
+  </div>
+  <span class="State-value" id="etat4">--</span>
+</div>
     </div>
 
     <div class="cards">
@@ -1089,6 +1120,38 @@ if (pct < 10) {
 }
 }
 
+// ── Timeout par station ───────────────────────────────────
+const TIMEOUT_MS = 5000; // 10 secondes sans données = déconnecté
+
+let timerStation1 = null;
+let timerStation2 = null;
+let timerStation3 = null;
+let timerStation4 = null;
+
+function setConnected(dotId, textId, connected) {
+  const dot  = document.getElementById(dotId);
+  const text = document.getElementById(textId);
+  if (!dot || !text) return;
+
+  if (connected) {
+    dot.className  = 'status-dot connected'; // vert + animation pulse
+    text.textContent = 'CONNECTÉ';
+    text.style.color = 'var(--green)';
+  } else {
+    dot.className  = 'status-dot';           // gris
+    text.textContent = 'DÉCONNECTÉ';
+    text.style.color = 'var(--accent2)';
+  }
+}
+
+function resetTimer(timer, dotId, textId) {
+  setConnected(dotId, textId, true);
+  if (timer) clearTimeout(timer);
+  return setTimeout(() => {
+    setConnected(dotId, textId, false);
+  }, TIMEOUT_MS);
+}
+
   // ── Connexion MQTT ─────────────────────────────────────────
 
   
@@ -1150,6 +1213,7 @@ if (pct < 10) {
           // Etat machine station 1
       if (topic === TOPIC10) {
         if(eletat1) eletat1.textContent =  message.toString();
+        timerStation1 = resetTimer(timerStation1, 'dot-station1', 'status-station1');
       }
 
           // Température du torrefacteur
@@ -1169,6 +1233,7 @@ if (pct < 10) {
           // Etat machine station 2
       if (topic === TOPIC20) {
         if(eletat2) eletat2.textContent =  message.toString();
+        timerStation2 = resetTimer(timerStation2, 'dot-station2', 'status-station2');
       }
 
           // Température du grain
@@ -1186,6 +1251,7 @@ if (pct < 10) {
           // Etat machine station 3
       if (topic === TOPIC30) {
         if(eletat3) eletat3.textContent =  message.toString();
+        timerStation3 = resetTimer(timerStation3, 'dot-station3', 'status-station3');
       }
 
           // Niveau du stock de grain terrefier
@@ -1202,6 +1268,7 @@ if (pct < 10) {
           // Etat machine station 4
       if (topic === TOPIC40) {
         if(eletat4) eletat4.textContent =  message.toString();
+        timerStation4 = resetTimer(timerStation4, 'dot-station4', 'status-station4');
       }
 
           // Température du thermoblock
