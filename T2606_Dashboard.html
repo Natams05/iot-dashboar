@@ -183,11 +183,13 @@
 
     .section-label {
       font-family: var(--font-mono);
-      font-size: 22x;
+      font-size: 60x;
+      font-weight: bold;
       letter-spacing: 3px;
-      color: var(--muted);
+      color: var(--accent);
       text-transform: uppercase;
       margin-bottom: 16px;
+      margin-left: 30px;
     }
 
     /* ── CARDS ── */
@@ -1138,7 +1140,7 @@ function setConnected(dotId, textId, connected) {
   } else {
     dot.className  = 'status-dot';           // gris
     text.textContent = 'DÉCONNECTÉ';
-    text.style.color = 'var(--accent2)';
+    text.style.color = 'var(--muted)';
   }
 }
 
@@ -1162,6 +1164,7 @@ function resetTimer(timer, dotId, textId) {
   client.on('connect', () => {
     elDot.className    = 'status-dot connected';
     elStatus.textContent = 'CONNECTÉ';
+    text.style.color = 'var(--green)';
     client.subscribe(TOPIC10, err => {
     });
     client.subscribe(TOPIC11, err => {
@@ -1188,18 +1191,21 @@ function resetTimer(timer, dotId, textId) {
     });
   });
 
-  client.on('erreur', err => {
+  client.on('error', err => {
     elDot.className    = 'status-dot error';
-    elStatus.textContent = 'ERROR';
+    elStatus.textContent = 'ERREUR';
+    text.style.color = 'var(--accent2)';
   });
 
-  client.on('hors ligne', () => {
+  client.on('offline', () => {
     elDot.className    = 'status-dot';
-    elStatus.textContent = 'DISCONNECTED';
+    elStatus.textContent = 'DECONNECTÉ';
+    text.style.color = 'var(--muted)';
   });
 
-  client.on('reconnection', () => {
-    elStatus.textContent = 'RECONNECTING...';
+  client.on('reconnect', () => {
+    elStatus.textContent = 'RECONNECTION...';
+    text.style.color = 'var(--muted)';
   });
 
     // Lecture des message
